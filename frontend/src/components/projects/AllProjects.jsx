@@ -250,22 +250,27 @@ function ProjectCard({ project, index }) {
 
         {/* ACTIONS */}
         <div className="mt-6 grid grid-cols-2 gap-2">
-          {/* View Project */}
-          {detailsUrl && (
+          {detailsUrl ? (
             <Link
               href={detailsUrl}
               className="group/link col-span-2 inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-[var(--primary)] px-4 text-xs font-bold text-white shadow-[0_8px_24px_color-mix(in_srgb,var(--primary)_18%,transparent)] transition-all duration-300 hover:-translate-y-0.5 hover:brightness-110"
             >
-              View Project
+              View Details
 
               <span className="transition-transform duration-300 group-hover/link:translate-x-1">
                 <ArrowIcon />
               </span>
             </Link>
+          ) : (
+            <span
+              aria-disabled="true"
+              className="col-span-2 inline-flex min-h-10 cursor-not-allowed items-center justify-center rounded-full bg-[var(--foreground)]/[0.06] px-4 text-xs font-bold text-[var(--muted)]/60"
+            >
+              Details coming soon
+            </span>
           )}
 
-          {/* Live */}
-          {liveUrl && (
+          {liveUrl ? (
             <a
               href={liveUrl}
               target="_blank"
@@ -276,10 +281,17 @@ function ProjectCard({ project, index }) {
               <ExternalIcon />
               Live Demo
             </a>
+          ) : (
+            <span
+              aria-disabled="true"
+              className="inline-flex min-h-10 cursor-not-allowed items-center justify-center gap-2 rounded-full border border-[var(--border)] bg-[var(--foreground)]/[0.025] px-3 text-[11px] font-bold text-[var(--muted)]/45"
+            >
+              <ExternalIcon />
+              Live unavailable
+            </span>
           )}
 
-          {/* GitHub */}
-          {githubUrl && (
+          {githubUrl ? (
             <a
               href={githubUrl}
               target="_blank"
@@ -290,6 +302,14 @@ function ProjectCard({ project, index }) {
               <GithubIcon />
               GitHub
             </a>
+          ) : (
+            <span
+              aria-disabled="true"
+              className="inline-flex min-h-10 cursor-not-allowed items-center justify-center gap-2 rounded-full border border-[var(--border)] bg-[var(--foreground)]/[0.025] px-3 text-[11px] font-bold text-[var(--muted)]/45"
+            >
+              <GithubIcon />
+              GitHub unavailable
+            </span>
           )}
 
           {/* Download */}

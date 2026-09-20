@@ -253,6 +253,8 @@ export const portfolio = {
       {
         id: "nestro",
 
+        slug: "nestro",
+
         title: "Nestro E-Commerce",
 
         type: "E-Commerce / Full Stack",
@@ -264,9 +266,25 @@ export const portfolio = {
         description:
           "A modern full-stack e-commerce platform focused on a clean shopping experience, responsive interface and practical store management.",
 
+        shortDescription:
+          "A modern full-stack e-commerce platform focused on a clean shopping experience, responsive interface and practical store management.",
+
+        fullDescription: [
+          "Nestro is a full-stack e-commerce experience built around a smooth furniture-shopping flow. It brings product discovery, cart and wishlist actions, checkout, and order-related screens into one responsive interface.",
+          "The project also includes store-management controls for categories, rooms, products, stock and orders, keeping the customer and admin workflows clearly separated.",
+        ],
+
         image: "/images/projects/nestro.jpg",
 
+        thumbnail: "/images/projects/nestro.jpg",
+
         status: "Live Project",
+
+        projectType: "Full Stack E-Commerce",
+
+        responsive: "100%",
+
+        admin: "Dashboard",
 
         stack: [
           "Next.js",
@@ -291,13 +309,100 @@ export const portfolio = {
           },
         ],
 
-        detailsHref: null,
-        liveHref: null,
-        githubHref: null,
+        features: [
+          {
+            title: "Authentication & profile",
+            items: [
+              "Signup and email OTP verification",
+              "Login and logout",
+              "JWT authentication",
+              "Profile updates, password changes and multiple addresses",
+            ],
+          },
+          {
+            title: "Product discovery",
+            items: [
+              "Product listing with category and room filters",
+              "Price and stock filters",
+              "Sorting, pagination and search",
+            ],
+          },
+          {
+            title: "Shopping flow",
+            items: [
+              "Guest and logged-in cart flows",
+              "Quantity management and cart persistence",
+              "Wishlist add and remove actions",
+              "Address selection, COD and Razorpay checkout",
+            ],
+          },
+          {
+            title: "Orders & admin",
+            items: [
+              "Order placement, history and payment handling",
+              "Tracking-related order UI",
+              "Admin controls for categories, rooms, products, stock and orders",
+            ],
+          },
+        ],
+
+        techStack: [
+          {
+            title: "Frontend",
+            items: ["Next.js", "React.js", "Tailwind CSS"],
+          },
+          {
+            title: "Backend",
+            items: ["Node.js", "Express.js"],
+          },
+          {
+            title: "Database",
+            items: ["MongoDB"],
+          },
+          {
+            title: "Payments",
+            items: ["Razorpay"],
+          },
+        ],
+
+        technicalHighlights: [
+          "Responsive shopping interface",
+          "JWT-based authentication flow",
+          "REST API integration",
+          "Guest and signed-in cart handling",
+          "Payment and order status flow",
+          "Reusable UI components",
+        ],
+
+        challenges: [
+          {
+            title: "Cart continuity",
+            description:
+              "Keeping guest-cart and logged-in-cart interactions consistent across the shopping flow.",
+          },
+          {
+            title: "Product discovery",
+            description:
+              "Combining search, filters, sorting and pagination without making product browsing difficult.",
+          },
+          {
+            title: "Checkout state",
+            description:
+              "Handling address selection, payment choices and order updates in one clear checkout journey.",
+          },
+        ],
+
+        screenshots: [],
+
+        detailsHref: "/projects/nestro",
+        liveHref: "https://nestro-one.vercel.app",
+        githubHref: "https://github.com/aadi-kumawat01/nestro",
       },
 
       {
         id: "portfolio",
+
+        slug: "developer-portfolio",
 
         title: "Developer Portfolio",
 
@@ -310,9 +415,23 @@ export const portfolio = {
         description:
           "A modern responsive portfolio website built to showcase my skills, projects and development journey with a clean and interactive user experience.",
 
+        shortDescription:
+          "A modern responsive portfolio website built to showcase my skills, projects and development journey with a clean and interactive user experience.",
+
+        fullDescription: [
+          "This portfolio presents my development work in a focused, responsive experience. It brings together the sections that explain who I am, what I am learning and the projects I am building.",
+          "The interface uses the same dark visual system across desktop, tablet and phone layouts, with navigation and project pages designed to keep the content easy to explore.",
+        ],
+
         image: "/images/projects/portfolio.jpg",
 
         status: "Live Project",
+
+        projectType: "Frontend Portfolio",
+
+        responsive: "100%",
+
+        admin: null,
 
         stack: [
           "Next.js",
@@ -335,13 +454,64 @@ export const portfolio = {
           },
         ],
 
-        detailsHref: null,
+        features: [
+          {
+            title: "Portfolio sections",
+            items: [
+              "Hero and About sections",
+              "Education and Skills sections",
+              "Projects, Testimonials and Contact sections",
+            ],
+          },
+          {
+            title: "Experience",
+            items: [
+              "Responsive navigation",
+              "Responsive layouts for phone, tablet and desktop",
+              "Theme handling and loading experience",
+              "Reusable project details pages",
+            ],
+          },
+        ],
+
+        techStack: [
+          {
+            title: "Frontend",
+            items: ["Next.js", "React.js", "Tailwind CSS"],
+          },
+        ],
+
+        technicalHighlights: [
+          "Responsive component layouts",
+          "Reusable section structure",
+          "Dark portfolio design system",
+          "Project filtering and dynamic project details",
+        ],
+
+        challenges: [
+          {
+            title: "Consistent layouts",
+            description:
+              "Keeping the visual experience balanced across desktop, tablet and phone screens.",
+          },
+          {
+            title: "Project navigation",
+            description:
+              "Making project information easy to explore without changing the main portfolio flow.",
+          },
+        ],
+
+        screenshots: [],
+
+        detailsHref: "/projects/developer-portfolio",
         liveHref: null,
         githubHref: null,
       },
 
       {
         id: "project-three",
+
+        slug: "third-project",
 
         title: "Your Third Project",
 
@@ -354,9 +524,22 @@ export const portfolio = {
         description:
           "Replace this content with the description of your third strongest project when it is ready to showcase.",
 
+        shortDescription:
+          "Project information will be added when this work is ready to showcase.",
+
+        fullDescription: [
+          "This project is still being prepared. Its final details, preview and links will be added once the work is ready to publish.",
+        ],
+
         image: "/images/projects/project-three.jpg",
 
         status: "In Development",
+
+        projectType: "Web App",
+
+        responsive: "To be confirmed",
+
+        admin: null,
 
         stack: [
           "React.js",
@@ -365,6 +548,12 @@ export const portfolio = {
         ],
 
         metrics: [],
+
+        features: [],
+        techStack: [],
+        technicalHighlights: [],
+        challenges: [],
+        screenshots: [],
 
         detailsHref: null,
         liveHref: null,
