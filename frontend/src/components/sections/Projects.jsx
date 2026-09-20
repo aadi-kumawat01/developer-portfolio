@@ -1,7 +1,4 @@
-"use client";
-
 import Link from "next/link";
-import { useState } from "react";
 
 function ArrowIcon() {
   return (
@@ -62,81 +59,12 @@ function GithubIcon() {
   );
 }
 
-function ViewAllProjectsButton() {
-  return (
-    <Link
-      href="/projects"
-      className={`
-        group relative isolate
-        min-h-14 items-center justify-center gap-4
-        overflow-hidden rounded-2xl
-        border border-[var(--primary)]/55
-        bg-[var(--surface)]/55
-        px-5 py-2
-        text-[var(--foreground)]
-        shadow-[0_10px_35px_color-mix(in_srgb,var(--primary)_12%,transparent)]
-        backdrop-blur-xl
-        transition-all duration-300
-        hover:-translate-y-1
-        hover:border-[var(--primary)]/85
-        hover:shadow-[0_16px_50px_color-mix(in_srgb,var(--primary)_24%,transparent)]
-        active:translate-y-0
-        active:scale-[0.98]
-        inline-flex w-full max-w-[360px]
-      `}
-    >
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-20 bg-gradient-to-r from-[var(--primary)]/[0.04] via-[var(--primary)]/[0.13] to-[var(--accent)]/[0.06] opacity-70 transition-opacity duration-300 group-hover:opacity-100"
-      />
-
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-8 -top-10 -z-10 h-24 w-24 rounded-full bg-[var(--primary)]/20 blur-2xl transition-all duration-500 group-hover:scale-150 group-hover:bg-[var(--primary)]/30"
-      />
-
-      <span className="relative flex h-2.5 w-2.5 shrink-0">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent)] opacity-35" />
-        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[var(--accent)] shadow-[0_0_12px_var(--primary)]" />
-      </span>
-
-      <span className="relative flex flex-col text-left">
-        <span className="text-sm font-bold tracking-[-0.02em]">
-          View All Projects
-        </span>
-
-        <span className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.13em] text-[var(--muted)] transition-colors duration-300 group-hover:text-[var(--foreground)]/70">
-          Explore my complete work
-        </span>
-      </span>
-
-      <span
-        className="
-          relative ml-auto grid h-9 w-9 shrink-0
-          place-items-center rounded-full
-          border border-[var(--primary)]/25
-          bg-[var(--primary)]/10
-          text-[var(--accent)]
-          transition-all duration-300
-          group-hover:translate-x-1
-          group-hover:border-[var(--primary)]
-          group-hover:bg-[var(--primary)]
-          group-hover:text-white
-          group-hover:shadow-[0_0_22px_color-mix(in_srgb,var(--primary)_35%,transparent)]
-        "
-      >
-        <ArrowIcon />
-      </span>
-    </Link>
-  );
-}
-
 function ProjectStatus({ children = "Live Project" }) {
   const isDevelopment =
     String(children).toLowerCase().includes("development");
 
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--background)]/55 px-2 py-1 text-[8px] font-semibold text-[var(--foreground)] backdrop-blur-xl sm:gap-2 sm:px-3 sm:py-1.5 sm:text-[9px]">
+    <span className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--background)]/55 px-3 py-1.5 text-[9px] font-semibold text-[var(--foreground)] backdrop-blur-xl">
       <span
         className={`h-1.5 w-1.5 rounded-full ${
           isDevelopment
@@ -145,8 +73,7 @@ function ProjectStatus({ children = "Live Project" }) {
         }`}
       />
 
-      <span className="sm:hidden">{isDevelopment ? "WIP" : "Live"}</span>
-      <span className="hidden sm:inline">{children}</span>
+      {children}
     </span>
   );
 }
@@ -171,14 +98,13 @@ function ProjectButton({
   children,
   primary = false,
   icon,
-  compact = false,
 }) {
   const classes = primary
     ? `
-        ${compact ? "inline-flex min-h-9 justify-center gap-1.5 px-3 text-[11px] whitespace-nowrap [&>svg]:h-3.5 [&>svg]:w-3.5 sm:min-h-10 sm:text-xs lg:col-span-2 lg:min-h-11 lg:gap-2 lg:px-4 lg:text-sm [&>svg]:h-4 [&>svg]:w-4" : "col-span-2 inline-flex min-h-11 justify-center gap-2 px-4 text-sm"}
+        inline-flex min-h-11 items-center justify-center gap-2
         rounded-xl border border-[var(--primary)]
-        bg-[var(--primary)]/15
-        font-semibold text-[var(--foreground)]
+        bg-[var(--primary)]/15 px-4
+        text-sm font-semibold text-[var(--foreground)]
         shadow-[0_0_28px_color-mix(in_srgb,var(--primary)_22%,transparent)]
         transition-all duration-300
         hover:-translate-y-0.5
@@ -186,10 +112,10 @@ function ProjectButton({
         hover:text-white
       `
     : `
-        ${compact ? "inline-flex min-h-9 justify-center gap-1.5 px-3 text-[11px] whitespace-nowrap [&>svg]:h-3.5 [&>svg]:w-3.5 sm:min-h-10 sm:text-xs lg:min-h-11 lg:gap-2 lg:px-4 lg:text-sm [&>svg]:h-4 [&>svg]:w-4" : "inline-flex min-h-11 justify-center gap-2 px-4 text-sm"}
+        inline-flex min-h-11 items-center justify-center gap-2
         rounded-xl border border-[var(--border)]
-        bg-[var(--background)]/40
-        font-medium text-[var(--foreground)]
+        bg-[var(--background)]/40 px-4
+        text-sm font-medium text-[var(--foreground)]
         transition-all duration-300
         hover:border-[var(--primary)]/50
         hover:text-[var(--accent)]
@@ -230,8 +156,6 @@ function ProjectButton({
 }
 
 function ProjectImage({ project, big = false }) {
-  const [hasImageError, setHasImageError] = useState(false);
-
   return (
     <div
       className={`
@@ -240,35 +164,21 @@ function ProjectImage({ project, big = false }) {
         bg-[var(--background)]
         ${
           big
-            ? "aspect-[2/1] rounded-[20px] md:aspect-[16/9] lg:aspect-[4/3] xl:aspect-[16/12]"
+            ? "aspect-[2/1] rounded-[20px] sm:aspect-[16/9] lg:aspect-[16/12]"
             : "aspect-[16/9] rounded-[16px] lg:aspect-[16/10]"
         }
       `}
     >
-      {!hasImageError && (
-        <img
-          src={project.image}
-          alt={`${project.title} project screenshot`}
-          loading="lazy"
-          onError={() => setHasImageError(true)}
-          className="
-            h-full w-full object-cover object-top
-            transition-transform duration-700
-            group-hover:scale-[1.025]
-          "
-        />
-      )}
-
-      {hasImageError && (
-        <div className="absolute inset-0 flex flex-col justify-end bg-[linear-gradient(135deg,color-mix(in_srgb,var(--surface)_90%,var(--background)),var(--background))] p-4">
-          <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[var(--accent)]">
-            Project preview
-          </span>
-          <span className="mt-1 text-sm font-bold text-[var(--foreground)]">
-            {project.title}
-          </span>
-        </div>
-      )}
+      <img
+        src={project.image}
+        alt={`${project.title} project screenshot`}
+        loading="lazy"
+        className="
+          h-full w-full object-cover object-top
+          transition-transform duration-700
+          group-hover:scale-[1.025]
+        "
+      />
 
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
     </div>
@@ -283,12 +193,13 @@ function FeaturedProject({ project, total }) {
         rounded-[28px]
         border border-[var(--primary)]/45
         bg-[var(--surface)]/45
-        p-4
+        p-3
         shadow-[0_30px_100px_rgba(0,0,0,.14)]
         backdrop-blur-xl
         sm:p-5 lg:p-6
       "
     >
+      {/* glow */}
       <div
         aria-hidden="true"
         className="
@@ -300,6 +211,7 @@ function FeaturedProject({ project, total }) {
         "
       />
 
+      {/* top */}
       <div className="relative flex items-center justify-between">
         <p className="text-sm font-semibold">
           <span className="text-[var(--accent)]">
@@ -320,6 +232,7 @@ function FeaturedProject({ project, total }) {
         </ProjectStatus>
       </div>
 
+      {/* main */}
       <div className="relative mt-3 grid flex-1 gap-3 sm:mt-4 sm:gap-4 lg:grid-cols-[1fr_1fr] lg:gap-6 xl:grid-cols-[1.2fr_.8fr]">
         <ProjectImage
           project={project}
@@ -346,38 +259,32 @@ function FeaturedProject({ project, total }) {
           <div className="mt-3 grid grid-cols-1 gap-2 sm:mt-5 sm:grid-cols-2 sm:gap-2.5 xl:mt-auto xl:pt-8">
             <div className="sm:col-span-2">
               <ProjectButton
-                href={project.detailsHref || "/projects"}
+                href={project.detailsHref}
                 primary
                 icon={<ArrowIcon />}
-                compact
               >
-                Explore Project
+                View Details
               </ProjectButton>
             </div>
 
-            {project.liveHref && (
-              <ProjectButton
-                href={project.liveHref}
-                icon={<ExternalIcon />}
-                compact
-              >
-                Live Demo
-              </ProjectButton>
-            )}
+            <ProjectButton
+              href={project.liveHref}
+              icon={<ExternalIcon />}
+            >
+              Live Demo
+            </ProjectButton>
 
-            {project.githubHref && (
-              <ProjectButton
-                href={project.githubHref}
-                icon={<GithubIcon />}
-                compact
-              >
-                GitHub
-              </ProjectButton>
-            )}
+            <ProjectButton
+              href={project.githubHref}
+              icon={<GithubIcon />}
+            >
+              GitHub
+            </ProjectButton>
           </div>
         </div>
       </div>
 
+      {/* bottom metrics */}
       {project.metrics?.length > 0 && (
         <div className="relative mt-5 hidden grid-cols-3 gap-3 border-t border-[var(--border)] pt-4 sm:grid">
           {project.metrics.map((metric) => (
@@ -408,7 +315,7 @@ function SideProject({
   return (
     <article
       className="
-        group relative w-full overflow-hidden
+        group relative overflow-hidden
         rounded-[26px]
         border border-[var(--border)]
         bg-[var(--surface)]/45
@@ -419,6 +326,7 @@ function SideProject({
         sm:p-5
       "
     >
+      {/* top */}
       <div className="flex items-center justify-between">
         <p className="text-xs font-semibold">
           <span className="text-[var(--accent)]">
@@ -439,6 +347,7 @@ function SideProject({
         </ProjectStatus>
       </div>
 
+      {/* content */}
       <div className="mt-3 grid gap-2 sm:mt-4 sm:gap-4 lg:grid-cols-[.9fr_1.1fr] lg:items-center">
         <ProjectImage project={project} />
 
@@ -463,35 +372,29 @@ function SideProject({
         </div>
       </div>
 
-      <div className="mt-3 grid grid-cols-1 gap-1.5 sm:mt-4 sm:grid-cols-2 sm:gap-2">
+      {/* buttons */}
+      <div className="mt-3 grid gap-1.5 sm:mt-4 sm:grid-cols-3 sm:gap-2">
         <ProjectButton
-          href={project.detailsHref || "/projects"}
+          href={project.detailsHref}
           primary
           icon={<ArrowIcon />}
-          compact
         >
-          Explore Project
+          View Details
         </ProjectButton>
 
-        {project.liveHref && (
-          <ProjectButton
-            href={project.liveHref}
-            icon={<ExternalIcon />}
-            compact
-          >
-            Live Demo
-          </ProjectButton>
-        )}
+        <ProjectButton
+          href={project.liveHref}
+          icon={<ExternalIcon />}
+        >
+          Live Demo
+        </ProjectButton>
 
-        {project.githubHref && (
-          <ProjectButton
-            href={project.githubHref}
-            icon={<GithubIcon />}
-            compact
-          >
-            GitHub
-          </ProjectButton>
-        )}
+        <ProjectButton
+          href={project.githubHref}
+          icon={<GithubIcon />}
+        >
+          GitHub
+        </ProjectButton>
       </div>
     </article>
   );
@@ -500,6 +403,11 @@ function SideProject({
 export function Projects({ projects }) {
   if (!projects?.items?.length) return null;
 
+  /*
+   * Homepage par sirf featured projects show honge.
+   * Agar old data me featured field nahi hai,
+   * to temporarily first 3 projects fallback honge.
+   */
   const featuredProjects = projects.items.filter(
     (project) => project.featured === true,
   );
@@ -527,14 +435,15 @@ export function Projects({ projects }) {
         lg:px-8 lg:py-28
       "
     >
+      {/* ambient glows */}
       <div
         aria-hidden="true"
         className="
           pointer-events-none absolute
           -left-52 top-[28%] -z-10
-          h-[420px] w-[420px]
+          h-[500px] w-[500px]
           rounded-full
-          bg-[var(--primary)]/[0.045]
+          bg-[var(--primary)]/[0.07]
           blur-[160px]
         "
       />
@@ -544,14 +453,15 @@ export function Projects({ projects }) {
         className="
           pointer-events-none absolute
           -right-52 top-0 -z-10
-          h-[360px] w-[360px]
+          h-[440px] w-[440px]
           rounded-full
-          bg-[var(--primary)]/[0.045]
+          bg-[var(--primary)]/[0.07]
           blur-[160px]
         "
       />
 
       <div className="mx-auto w-full max-w-[1450px]">
+        {/* HEADING */}
         <div>
           <div>
             <div className="flex items-center gap-3">
@@ -566,7 +476,7 @@ export function Projects({ projects }) {
               id="projects-heading"
               className="
                 mt-4
-                text-[clamp(2rem,6vw,4.4rem)]
+                text-[clamp(2.8rem,7vw,5rem)]
                 font-bold
                 leading-[.92]
                 tracking-[-0.065em]
@@ -586,13 +496,14 @@ export function Projects({ projects }) {
 
         </div>
 
+        {/* PROJECT GRID */}
         <div className="mt-8 grid gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-[1.55fr_1fr]">
           <FeaturedProject
             project={items[0]}
             total={total}
           />
 
-          <div aria-label="More featured projects" className="grid grid-cols-2 gap-3 md:col-span-2 md:grid-cols-2 md:gap-4 lg:col-span-1 lg:grid-cols-1">
+          <div className="grid grid-cols-2 gap-3 md:col-span-2 md:grid-cols-2 md:gap-4 lg:col-span-1 lg:grid-cols-1">
             {items[1] && (
               <SideProject
                 project={items[1]}
@@ -612,7 +523,32 @@ export function Projects({ projects }) {
         </div>
 
         <div className="mt-10 flex justify-center">
-          <ViewAllProjectsButton />
+          <Link
+            href="/projects"
+            className="
+              group relative inline-flex min-h-14 items-center gap-4
+              overflow-hidden rounded-2xl
+              border border-[var(--primary)]/65
+              bg-[var(--surface)]/60
+              px-5 text-sm font-bold text-[var(--foreground)]
+              shadow-[0_12px_40px_color-mix(in_srgb,var(--primary)_16%,transparent)]
+              backdrop-blur-xl sm:px-6 sm:text-base
+              transition-all duration-300
+              hover:-translate-y-1 hover:border-[var(--primary)]
+              hover:shadow-[0_18px_52px_color-mix(in_srgb,var(--primary)_28%,transparent)]
+            "
+          >
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 bg-gradient-to-r from-[var(--primary)]/[0.03] via-[var(--primary)]/[0.16] to-[var(--accent)]/[0.05] opacity-80 transition-opacity duration-300 group-hover:opacity-100"
+            />
+
+            <span className="relative">View All Projects</span>
+
+            <span className="relative grid h-9 w-9 place-items-center rounded-full border border-[var(--primary)]/30 bg-[var(--primary)]/10 text-[var(--accent)] transition-all duration-300 group-hover:translate-x-1 group-hover:bg-[var(--primary)] group-hover:text-white">
+              <ArrowIcon />
+            </span>
+          </Link>
         </div>
       </div>
     </section>
