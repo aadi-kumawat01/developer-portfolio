@@ -1,7 +1,25 @@
+import "dotenv/config";
 import app from "./src/app.js";
+import connectDB from "./src/config/db.js";
 
-const port = process.env.PORT || 5000;
+async function startServer() {
+  try {
+    await connectDB();
 
-app.listen(port, () => {
-  console.log(`Portfolio backend running on port ${port}`);
-});
+    const port = process.env.PORT || 5000;
+
+    const server = app.listen(port, () => {
+      console.log(`Portfolio backend running on port ${port}`);
+    });
+
+    server.on("error", () => {
+      console.error("Unable to start the portfolio backend.");
+      process.exit(1);
+    });
+  } catch (error) {
+    console.error("Unable to start the portfolio backend.");
+    process.exit(1);
+  }
+}
+
+startServer();
