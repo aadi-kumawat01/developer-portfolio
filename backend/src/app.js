@@ -1,6 +1,7 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
+import adminRouter from "./routes/admin.routes.js";
 import healthRouter from "./routes/health.routes.js";
 import { notFound } from "./middleware/notFound.middleware.js";
 import { errorHandler } from "./middleware/error.middleware.js";
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use("/api/health", healthRouter);
+app.use("/api/admin", adminRouter);
 
 app.use(notFound);
 app.use(errorHandler);
