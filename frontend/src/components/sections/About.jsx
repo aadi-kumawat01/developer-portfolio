@@ -54,7 +54,7 @@ export function About({ about, profile }) {
 
               <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/35 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-white backdrop-blur-md">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                Developer
+                {profile.developerLabel || "Developer"}
               </div>
 
               <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">

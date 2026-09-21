@@ -113,7 +113,7 @@ export function HeroContent({ hero, profile }) {
         "
       >
         <Link
-          href="/#projects"
+          href={hero.primaryCtaHref || "/#projects"}
           className="
             inline-flex
             min-h-12
@@ -146,7 +146,7 @@ export function HeroContent({ hero, profile }) {
         </Link>
 
         <Link
-          href="/#contact"
+          href={hero.secondaryCtaHref || "/#contact"}
           className="
             inline-flex
             min-h-12

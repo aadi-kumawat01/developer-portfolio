@@ -7,12 +7,13 @@ const authPaths = new Set([
 
 export async function apiRequest(path, options = {}) {
   const hasBody = options.body !== undefined;
+  const isFormData = typeof FormData !== "undefined" && options.body instanceof FormData;
   const url = authPaths.has(path) ? path : `${apiBaseUrl}${path}`;
   const response = await fetch(url, {
     credentials: "include",
     ...options,
     headers: {
-      ...(hasBody ? { "Content-Type": "application/json" } : {}),
+      ...(hasBody && !isFormData ? { "Content-Type": "application/json" } : {}),
       ...options.headers,
     },
   });

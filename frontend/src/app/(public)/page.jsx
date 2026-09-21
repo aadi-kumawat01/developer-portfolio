@@ -4,11 +4,12 @@ import { Education } from "@/components/sections/Education";
 import { Skills } from "@/components/sections/Skills";
 import { Projects } from "@/components/sections/Projects";
 import { getPortfolio } from "@/lib/content/portfolio";
+import { getPublicSiteContent, hasSiteContent } from "@/lib/content/site";
 import Testimonials from "@/components/sections/Testimonials";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/layout/Footer";
 
-export default function HomePage() {
+export default async function HomePage() {
   const {
     hero,
     about,
@@ -17,15 +18,58 @@ export default function HomePage() {
     contact,
     profile,
   } = getPortfolio();
+  const siteContent = await getPublicSiteContent();
+  const cmsHeroIsReady = hasSiteContent(siteContent?.hero);
+  const cmsAboutIsReady = hasSiteContent(siteContent?.about)
+    || siteContent?.aboutStats?.length
+    || siteContent?.aboutHighlights?.length;
+  const cmsHero = siteContent?.hero;
+  const cmsAbout = siteContent?.about;
+  const cmsName = [cmsHero?.firstName, cmsHero?.lastName].filter(Boolean).join(" ");
+  const cmsProfile = {
+    ...profile,
+    ...(cmsHeroIsReady && {
+      name: cmsName || profile.name,
+      role: cmsHero.role || profile.role,
+    }),
+    ...(cmsAboutIsReady && {
+      location: cmsAbout.locationText || profile.location,
+      profileImageUrl: cmsAbout.imageUrl || profile.profileImageUrl,
+      developerLabel: cmsAbout.developerLabel || "Developer",
+    }),
+  };
+  const cmsHeroData = cmsHeroIsReady
+    ? {
+      ...hero,
+      availability: cmsHero.eyebrow || hero.availability,
+      headline: cmsHero.role || hero.headline,
+      description: cmsHero.description || hero.description,
+      primaryCtaLabel: cmsHero.primaryCta?.label || hero.primaryCtaLabel,
+      primaryCtaHref: cmsHero.primaryCta?.href || "/#projects",
+      secondaryCtaLabel: cmsHero.secondaryCta?.label || hero.secondaryCtaLabel,
+      secondaryCtaHref: cmsHero.secondaryCta?.href || "/#contact",
+    }
+    : hero;
+  const cmsAboutData = cmsAboutIsReady
+    ? {
+      ...about,
+      eyebrow: cmsAbout.eyebrow || about.eyebrow,
+      heading: cmsAbout.heading || about.heading,
+      description: cmsAbout.description || about.description,
+      stats: siteContent.aboutStats?.length
+        ? siteContent.aboutStats.map(({ value, label }) => ({ value, label }))
+        : about.stats,
+      services: siteContent.aboutHighlights?.length
+        ? siteContent.aboutHighlights.map(({ title }) => title)
+        : about.services,
+    }
+    : about;
 
   return (
     <main id="main-content" tabIndex={-1}>
-      <Hero hero={hero} profile={profile} />
+      {(!cmsHeroIsReady || cmsHero.visible !== false) && <Hero hero={cmsHeroData} profile={cmsProfile} />}
 
-      <About
-        about={about}
-        profile={profile}
-      />
+      {(!cmsAboutIsReady || cmsAbout.visible !== false) && <About about={cmsAboutData} profile={cmsProfile} />}
       <Education />
 
       <Skills skills={skills} />
