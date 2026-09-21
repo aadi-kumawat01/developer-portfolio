@@ -4,6 +4,7 @@ import express from "express";
 import aboutHighlightsRouter from "./routes/aboutHighlights.routes.js";
 import aboutStatsRouter from "./routes/aboutStats.routes.js";
 import adminRouter from "./routes/admin.routes.js";
+import adminContactRouter from "./routes/adminContact.routes.js";
 import adminSiteRouter from "./routes/adminSite.routes.js";
 import adminEducationRouter from "./routes/adminEducation.routes.js";
 import adminLearningRouter from "./routes/adminLearning.routes.js";
@@ -13,6 +14,7 @@ import adminSkillCategoriesRouter from "./routes/adminSkillCategories.routes.js"
 import adminSkillsRouter from "./routes/adminSkills.routes.js";
 import adminTestimonialsRouter from "./routes/adminTestimonials.routes.js";
 import educationRouter from "./routes/education.routes.js";
+import contactRouter from "./routes/contact.routes.js";
 import healthRouter from "./routes/health.routes.js";
 import learningRouter from "./routes/learning.routes.js";
 import projectCategoriesRouter from "./routes/projectCategories.routes.js";
@@ -35,6 +37,8 @@ app.use(cookieParser());
 
 app.use("/api/health", healthRouter);
 app.use("/api/admin", adminRouter);
+app.use("/api/contact", contactRouter);
+app.use("/api/admin/contact", adminContactRouter);
 app.use("/api/site", siteRouter);
 app.use("/api/admin/site", adminSiteRouter);
 app.use("/api/admin/about-stats", aboutStatsRouter);

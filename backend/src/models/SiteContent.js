@@ -35,6 +35,21 @@ const aboutSchema = new mongoose.Schema(
   { _id: false },
 );
 
+const contactSchema = new mongoose.Schema(
+  {
+    eyebrow: { type: String, default: "", trim: true },
+    heading: { type: String, default: "", trim: true },
+    description: { type: String, default: "", trim: true },
+    availabilityText: { type: String, default: "", trim: true },
+    email: { type: String, default: "", trim: true },
+    location: { type: String, default: "", trim: true },
+    formHeading: { type: String, default: "", trim: true },
+    formDescription: { type: String, default: "", trim: true },
+    visible: { type: Boolean, default: true },
+  },
+  { _id: false },
+);
+
 const siteContentSchema = new mongoose.Schema(
   {
     singletonKey: {
@@ -45,6 +60,7 @@ const siteContentSchema = new mongoose.Schema(
     },
     hero: { type: heroSchema, default: () => ({}) },
     about: { type: aboutSchema, default: () => ({}) },
+    contact: { type: contactSchema, default: () => ({}) },
   },
   { timestamps: true },
 );
