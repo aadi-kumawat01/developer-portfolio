@@ -1,13 +1,16 @@
 import { connectDB } from "@/lib/db";
+import { forwardAdminRequest } from "@/lib/admin-auth-proxy";
 import { resources } from "@/lib/cms/resources";
 import { apiError, json, readBody, requireAdmin } from "@/lib/cms/api";
 
 export const runtime = "nodejs";
 
 export async function GET(request, { params }) {
+  const { resource } = await params;
+  if (resource === "me") return forwardAdminRequest(request, "me");
+
   const denied = requireAdmin(request);
   if (denied) return denied;
-  const { resource } = await params;
   const config = resources[resource];
   if (!config) return json({ error: "Not found" }, 404);
   try {
@@ -20,9 +23,13 @@ export async function GET(request, { params }) {
 }
 
 export async function POST(request, { params }) {
+  const { resource } = await params;
+  if (resource === "login" || resource === "logout") {
+    return forwardAdminRequest(request, resource);
+  }
+
   const denied = requireAdmin(request, true);
   if (denied) return denied;
-  const { resource } = await params;
   const config = resources[resource];
   if (!config || config.single) return json({ error: "Not found" }, 404);
   try {
