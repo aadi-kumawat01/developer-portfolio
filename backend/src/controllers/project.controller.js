@@ -17,6 +17,8 @@ const allowedFields = new Set([
   "techStack",
   "screenshots",
   "status",
+  "featured",
+  "featuredOrder",
   "order",
   "visible",
 ]);
@@ -92,7 +94,67 @@ function slugIsTaken(slug, projectId) {
   return Project.exists(filter);
 }
 
-async function getProjectUpdates(body, isNew = false) {
+async function featuredPositionIsTaken(featuredOrder, projectId) {
+  const filter = projectId
+    ? { featured: true, featuredOrder, _id: { $ne: projectId } }
+    : { featured: true, featuredOrder };
+
+  return Project.exists(filter);
+}
+
+function applyFeaturedRules(body, updates, currentProject) {
+  if ("featured" in body && typeof body.featured !== "boolean") {
+    return "featured must be a boolean";
+  }
+
+  if (
+    "featuredOrder" in body &&
+    body.featuredOrder !== null &&
+    ![1, 2, 3].includes(body.featuredOrder)
+  ) {
+    return "featuredOrder must be 1, 2, 3, or null";
+  }
+
+  const visible = "visible" in updates
+    ? updates.visible
+    : currentProject?.visible ?? true;
+  const status = "status" in updates
+    ? updates.status
+    : currentProject?.status ?? "development";
+  const featured = "featured" in body
+    ? body.featured
+    : currentProject?.featured ?? false;
+  const featuredOrder = "featuredOrder" in body
+    ? body.featuredOrder
+    : currentProject?.featuredOrder ?? null;
+  const featureRequested = body.featured === true || body.featuredOrder != null;
+
+  if (!visible || status === "private") {
+    if (featureRequested) {
+      return "Only visible, non-private projects can be featured";
+    }
+
+    updates.featured = false;
+    updates.featuredOrder = null;
+    return null;
+  }
+
+  if (!featured) {
+    updates.featured = false;
+    updates.featuredOrder = null;
+    return null;
+  }
+
+  if (![1, 2, 3].includes(featuredOrder)) {
+    return "featuredOrder is required when featured is true";
+  }
+
+  updates.featured = true;
+  updates.featuredOrder = featuredOrder;
+  return null;
+}
+
+async function getProjectUpdates(body, isNew = false, currentProject = null) {
   for (const field of Object.keys(body)) {
     if (!allowedFields.has(field)) {
       return { error: `${field} is not supported` };
@@ -199,6 +261,12 @@ async function getProjectUpdates(body, isNew = false) {
     updates.visible = body.visible;
   }
 
+  const featuredError = applyFeaturedRules(body, updates, currentProject);
+
+  if (featuredError) {
+    return { error: featuredError };
+  }
+
   if (!Object.keys(updates).length) {
     return { error: "No valid project fields provided" };
   }
@@ -241,6 +309,19 @@ export async function getPublicProject(req, res) {
   }
 
   return res.json({ success: true, data: project });
+}
+
+export async function getFeaturedProjects(req, res) {
+  const projects = await Project.find({
+    featured: true,
+    visible: true,
+    status: { $ne: "private" },
+  })
+    .sort({ featuredOrder: 1 })
+    .limit(3)
+    .populate("category", "name slug");
+
+  return res.json({ success: true, data: projects });
 }
 
 export async function getAdminProjects(req, res) {
@@ -286,6 +367,16 @@ export async function createProject(req, res) {
     return res.status(409).json({ success: false, message: "Project slug already exists" });
   }
 
+  if (
+    updates.featured &&
+    (await featuredPositionIsTaken(updates.featuredOrder))
+  ) {
+    return res.status(409).json({
+      success: false,
+      message: `Featured position ${updates.featuredOrder} is already assigned to another project.`,
+    });
+  }
+
   if (!("order" in updates)) {
     updates.order = await getNextOrder(Project);
   }
@@ -304,7 +395,17 @@ export async function updateProject(req, res) {
     return res.status(400).json({ success: false, message: "Invalid project id" });
   }
 
-  const { updates, error } = await getProjectUpdates(req.body || {});
+  const currentProject = await Project.findById(req.params.id);
+
+  if (!currentProject) {
+    return res.status(404).json({ success: false, message: "Project not found" });
+  }
+
+  const { updates, error } = await getProjectUpdates(
+    req.body || {},
+    false,
+    currentProject,
+  );
 
   if (error) {
     return res.status(400).json({ success: false, message: error });
@@ -314,14 +415,20 @@ export async function updateProject(req, res) {
     return res.status(409).json({ success: false, message: "Project slug already exists" });
   }
 
+  if (
+    updates.featured &&
+    (await featuredPositionIsTaken(updates.featuredOrder, req.params.id))
+  ) {
+    return res.status(409).json({
+      success: false,
+      message: `Featured position ${updates.featuredOrder} is already assigned to another project.`,
+    });
+  }
+
   const project = await Project.findByIdAndUpdate(req.params.id, updates, {
     new: true,
     runValidators: true,
   }).populate("category", "name slug");
-
-  if (!project) {
-    return res.status(404).json({ success: false, message: "Project not found" });
-  }
 
   return res.json({
     success: true,
