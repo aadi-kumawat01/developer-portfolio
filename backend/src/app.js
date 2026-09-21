@@ -12,6 +12,7 @@ import adminProjectCategoriesRouter from "./routes/adminProjectCategories.routes
 import adminProjectsRouter from "./routes/adminProjects.routes.js";
 import adminSkillCategoriesRouter from "./routes/adminSkillCategories.routes.js";
 import adminSkillsRouter from "./routes/adminSkills.routes.js";
+import adminSocialLinksRouter from "./routes/adminSocialLinks.routes.js";
 import adminTestimonialsRouter from "./routes/adminTestimonials.routes.js";
 import educationRouter from "./routes/education.routes.js";
 import contactRouter from "./routes/contact.routes.js";
@@ -21,6 +22,7 @@ import projectCategoriesRouter from "./routes/projectCategories.routes.js";
 import projectsRouter from "./routes/projects.routes.js";
 import siteRouter from "./routes/site.routes.js";
 import skillsRouter from "./routes/skills.routes.js";
+import socialLinksRouter from "./routes/socialLinks.routes.js";
 import testimonialsRouter from "./routes/testimonials.routes.js";
 import { notFound } from "./middleware/notFound.middleware.js";
 import { errorHandler } from "./middleware/error.middleware.js";
@@ -56,6 +58,8 @@ app.use("/api/projects", projectsRouter);
 app.use("/api/admin/projects", adminProjectsRouter);
 app.use("/api/testimonials", testimonialsRouter);
 app.use("/api/admin/testimonials", adminTestimonialsRouter);
+app.use("/api/social-links", socialLinksRouter);
+app.use("/api/admin/social-links", adminSocialLinksRouter);
 
 app.use(notFound);
 app.use(errorHandler);
