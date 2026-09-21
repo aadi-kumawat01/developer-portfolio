@@ -1,4 +1,5 @@
 import ProjectCategory from "../models/ProjectCategory.js";
+import Project from "../models/Project.js";
 import { getNextOrder, isValidId, isValidOrder } from "../utils/cms.js";
 
 function normalizeSlug(value) {
@@ -152,6 +153,15 @@ export async function updateProjectCategory(req, res) {
 export async function deleteProjectCategory(req, res) {
   if (!isValidId(req.params.id)) {
     return res.status(400).json({ success: false, message: "Invalid project category id" });
+  }
+
+  const projectCount = await Project.countDocuments({ category: req.params.id });
+
+  if (projectCount > 0) {
+    return res.status(409).json({
+      success: false,
+      message: "Cannot delete category while projects are assigned to it.",
+    });
   }
 
   const category = await ProjectCategory.findByIdAndDelete(req.params.id);
