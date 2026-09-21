@@ -6,6 +6,7 @@ const textFields = [
   "shortDescription",
   "description",
   "thumbnailUrl",
+  "thumbnailPublicId",
   "liveUrl",
   "githubUrl",
 ];
@@ -16,6 +17,7 @@ const allowedFields = new Set([
   ...textFields,
   "techStack",
   "screenshots",
+  "screenshotPublicIds",
   "status",
   "featured",
   "featuredOrder",
@@ -83,6 +85,14 @@ function normalizeScreenshots(value) {
   }
 
   return { value: [...new Set(screenshots)] };
+}
+
+function normalizeStringArray(value, field) {
+  if (!Array.isArray(value) || value.some((item) => typeof item !== "string")) {
+    return { error: `${field} must be an array of strings` };
+  }
+
+  return { value: [...new Set(value.map((item) => item.trim()).filter(Boolean))] };
 }
 
 async function categoryExists(categoryId) {
@@ -235,6 +245,16 @@ async function getProjectUpdates(body, isNew = false, currentProject = null) {
     }
 
     updates.screenshots = result.value;
+  }
+
+  if ("screenshotPublicIds" in body) {
+    const result = normalizeStringArray(body.screenshotPublicIds, "screenshotPublicIds");
+
+    if (result.error) {
+      return result;
+    }
+
+    updates.screenshotPublicIds = result.value;
   }
 
   if ("status" in body) {

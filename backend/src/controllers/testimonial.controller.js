@@ -1,7 +1,7 @@
 import Testimonial from "../models/Testimonial.js";
 import { getNextOrder, isValidId, isValidOrder } from "../utils/cms.js";
 
-const textFields = ["role", "initials"];
+const textFields = ["role", "initials", "avatarPublicId"];
 const allowedFields = new Set([
   "name",
   "role",
@@ -9,6 +9,7 @@ const allowedFields = new Set([
   "rating",
   "initials",
   "avatarUrl",
+  "avatarPublicId",
   "order",
   "visible",
 ]);

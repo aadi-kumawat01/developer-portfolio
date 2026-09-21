@@ -30,6 +30,7 @@ const aboutSchema = new mongoose.Schema(
     developerLabel: { type: String, default: "", trim: true },
     locationText: { type: String, default: "", trim: true },
     imageUrl: { type: String, default: "", trim: true },
+    imagePublicId: { type: String, default: "", trim: true },
     visible: { type: Boolean, default: true },
   },
   { _id: false },

@@ -124,6 +124,7 @@ function getSiteUpdates(body) {
         "developerLabel",
         "locationText",
         "imageUrl",
+        "imagePublicId",
       ],
     );
     const visibleError = addBooleanUpdate(updates, "about", body.about);

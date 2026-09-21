@@ -13,7 +13,9 @@ const projectSchema = new mongoose.Schema(
     description: { type: String, trim: true },
     techStack: { type: [String], default: [] },
     thumbnailUrl: { type: String, trim: true },
+    thumbnailPublicId: { type: String, trim: true },
     screenshots: { type: [String], default: [] },
+    screenshotPublicIds: { type: [String], default: [] },
     liveUrl: { type: String, trim: true },
     githubUrl: { type: String, trim: true },
     status: {

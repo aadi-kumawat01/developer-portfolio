@@ -14,6 +14,7 @@ import adminSkillCategoriesRouter from "./routes/adminSkillCategories.routes.js"
 import adminSkillsRouter from "./routes/adminSkills.routes.js";
 import adminSocialLinksRouter from "./routes/adminSocialLinks.routes.js";
 import adminTestimonialsRouter from "./routes/adminTestimonials.routes.js";
+import adminUploadsRouter from "./routes/adminUploads.routes.js";
 import educationRouter from "./routes/education.routes.js";
 import contactRouter from "./routes/contact.routes.js";
 import healthRouter from "./routes/health.routes.js";
@@ -60,6 +61,7 @@ app.use("/api/testimonials", testimonialsRouter);
 app.use("/api/admin/testimonials", adminTestimonialsRouter);
 app.use("/api/social-links", socialLinksRouter);
 app.use("/api/admin/social-links", adminSocialLinksRouter);
+app.use("/api/admin/uploads", adminUploadsRouter);
 
 app.use(notFound);
 app.use(errorHandler);
