@@ -11,6 +11,7 @@ import adminProjectCategoriesRouter from "./routes/adminProjectCategories.routes
 import adminProjectsRouter from "./routes/adminProjects.routes.js";
 import adminSkillCategoriesRouter from "./routes/adminSkillCategories.routes.js";
 import adminSkillsRouter from "./routes/adminSkills.routes.js";
+import adminTestimonialsRouter from "./routes/adminTestimonials.routes.js";
 import educationRouter from "./routes/education.routes.js";
 import healthRouter from "./routes/health.routes.js";
 import learningRouter from "./routes/learning.routes.js";
@@ -18,6 +19,7 @@ import projectCategoriesRouter from "./routes/projectCategories.routes.js";
 import projectsRouter from "./routes/projects.routes.js";
 import siteRouter from "./routes/site.routes.js";
 import skillsRouter from "./routes/skills.routes.js";
+import testimonialsRouter from "./routes/testimonials.routes.js";
 import { notFound } from "./middleware/notFound.middleware.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 
@@ -48,6 +50,8 @@ app.use("/api/project-categories", projectCategoriesRouter);
 app.use("/api/admin/project-categories", adminProjectCategoriesRouter);
 app.use("/api/projects", projectsRouter);
 app.use("/api/admin/projects", adminProjectsRouter);
+app.use("/api/testimonials", testimonialsRouter);
+app.use("/api/admin/testimonials", adminTestimonialsRouter);
 
 app.use(notFound);
 app.use(errorHandler);
