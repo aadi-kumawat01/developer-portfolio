@@ -400,7 +400,7 @@ function SideProject({
   );
 }
 
-export function Projects({ projects }) {
+export function Projects({ projects, cmsItems }) {
   if (!projects?.items?.length) return null;
 
   /*
@@ -408,15 +408,13 @@ export function Projects({ projects }) {
    * Agar old data me featured field nahi hai,
    * to temporarily first 3 projects fallback honge.
    */
-  const featuredProjects = projects.items.filter(
+  const featuredProjects = Array.isArray(cmsItems) && cmsItems.length
+    ? cmsItems
+    : projects.items.filter(
     (project) => project.featured === true,
   );
 
-  const items = (
-    featuredProjects.length > 0
-      ? featuredProjects
-      : projects.items
-  ).slice(0, 3);
+  const items = (featuredProjects.length > 0 ? featuredProjects : projects.items).slice(0, 3);
 
   if (!items.length) return null;
 

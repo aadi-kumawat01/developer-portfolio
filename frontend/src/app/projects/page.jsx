@@ -1,8 +1,10 @@
 import { AllProjects } from "@/components/projects/AllProjects";
 import { portfolio } from "@/data/portfolio";
+import { getPublicProjects } from "@/lib/content/projects";
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const cmsProjects = await getPublicProjects();
   return (
-    <AllProjects projects={portfolio.projects.items} />
+    <AllProjects projects={cmsProjects.length ? cmsProjects : portfolio.projects.items} />
   );
 }

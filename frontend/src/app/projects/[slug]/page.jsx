@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { portfolio } from "@/data/portfolio";
+import { getPublicProject } from "@/lib/content/projects";
 
 function ProjectAction({ href, children, primary = false }) {
   const className = `inline-flex min-h-11 items-center justify-center rounded-full px-5 text-sm font-bold transition-colors ${
@@ -72,9 +73,10 @@ function ProjectImage({ src, alt, className = "" }) {
 
 export default async function ProjectDetailsPage({ params }) {
   const { slug } = await params;
-  const project = portfolio.projects.items.find(
+  const fallbackProject = portfolio.projects.items.find(
     (item) => item.slug === slug,
   );
+  const project = await getPublicProject(slug) || fallbackProject;
 
   if (!project) {
     notFound();
@@ -146,7 +148,7 @@ export default async function ProjectDetailsPage({ params }) {
 
             <div className="min-h-72 border-t border-[var(--border)] bg-black/20 lg:min-h-full lg:border-l lg:border-t-0">
               <ProjectImage
-                src={project.thumbnail}
+                src={project.thumbnail || project.image}
                 alt={`${project.title} project preview`}
                 className="min-h-72 lg:min-h-full"
               />
