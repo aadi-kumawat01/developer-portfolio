@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { apiRequest } from "@/lib/api";
 
 function MailIcon({ className = "h-5 w-5" }) {
   return (
@@ -229,6 +230,9 @@ function socialIcon(iconKey) {
 
 export function Contact({ contact, profile, socialLinks }) {
   const [copied, setCopied] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "", website: "" });
+  const [formStatus, setFormStatus] = useState({ type: "", message: "" });
+  const [isSending, setIsSending] = useState(false);
 
   const email =
     contact?.email ||
@@ -272,39 +276,42 @@ export function Contact({ contact, profile, socialLinks }) {
     }
   }
 
-  function handleSubmit(event) {
+  function updateForm(field, value) {
+    setFormData((current) => ({ ...current, [field]: value }));
+  }
+
+  async function handleSubmit(event) {
     event.preventDefault();
+    setFormStatus({ type: "", message: "" });
 
-    if (!email) return;
+    const name = formData.name.trim();
+    const visitorEmail = formData.email.trim();
+    const message = formData.message.trim();
 
-    const form = new FormData(event.currentTarget);
+    if (!name || !visitorEmail || !message) {
+      setFormStatus({ type: "error", message: "Please fill in your name, email, and message." });
+      return;
+    }
 
-    const name =
-      form.get("name")?.toString().trim() || "";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(visitorEmail)) {
+      setFormStatus({ type: "error", message: "Please enter a valid email address." });
+      return;
+    }
 
-    const visitorEmail =
-      form.get("email")?.toString().trim() || "";
+    setIsSending(true);
 
-    const subject =
-      form.get("subject")?.toString().trim() ||
-      "Portfolio Enquiry";
-
-    const message =
-      form.get("message")?.toString().trim() || "";
-
-    const body = [
-      "Hi Aditya,",
-      "",
-      message,
-      "",
-      `Name: ${name}`,
-      `Email: ${visitorEmail}`,
-    ].join("\n");
-
-    window.location.href =
-      `mailto:${email}` +
-      `?subject=${encodeURIComponent(subject)}` +
-      `&body=${encodeURIComponent(body)}`;
+    try {
+      await apiRequest("/api/contact/send", {
+        method: "POST",
+        body: JSON.stringify({ ...formData, name, email: visitorEmail, message }),
+      });
+      setFormData({ name: "", email: "", subject: "", message: "", website: "" });
+      setFormStatus({ type: "success", message: "Message sent successfully. I'll get back to you soon." });
+    } catch (requestError) {
+      setFormStatus({ type: "error", message: requestError.message || "Couldn't send your message right now. Please try again." });
+    } finally {
+      setIsSending(false);
+    }
   }
 
   return (
@@ -656,6 +663,18 @@ export function Contact({ contact, profile, socialLinks }) {
                 onSubmit={handleSubmit}
                 className="mt-6"
               >
+                <div className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+                  <label htmlFor="contact-website">Website</label>
+                  <input
+                    id="contact-website"
+                    name="website"
+                    type="text"
+                    value={formData.website}
+                    onChange={(event) => updateForm("website", event.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
+                </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <label>
                     <span
@@ -676,6 +695,8 @@ export function Contact({ contact, profile, socialLinks }) {
                       required
                       autoComplete="name"
                       placeholder="Your name"
+                      value={formData.name}
+                      onChange={(event) => updateForm("name", event.target.value)}
                       className="
                         mt-2 w-full
                         border-0 border-b
@@ -711,6 +732,8 @@ export function Contact({ contact, profile, socialLinks }) {
                       required
                       autoComplete="email"
                       placeholder="you@example.com"
+                      value={formData.email}
+                      onChange={(event) => updateForm("email", event.target.value)}
                       className="
                         mt-2 w-full
                         border-0 border-b
@@ -742,6 +765,8 @@ export function Contact({ contact, profile, socialLinks }) {
                     name="subject"
                     type="text"
                     placeholder="Project discussion"
+                    value={formData.subject}
+                    onChange={(event) => updateForm("subject", event.target.value)}
                     className="
                       mt-2 w-full
                       border-0 border-b
@@ -789,6 +814,8 @@ export function Contact({ contact, profile, socialLinks }) {
                     maxLength={800}
                     rows={5}
                     placeholder="Tell me what you'd like to build..."
+                    value={formData.message}
+                    onChange={(event) => updateForm("message", event.target.value)}
                     className="
                       mt-3 w-full resize-none
                       rounded-[20px]
@@ -815,6 +842,7 @@ export function Contact({ contact, profile, socialLinks }) {
                 >
                   <button
                     type="submit"
+                    disabled={isSending}
                     className="
                       group
                       inline-flex min-h-12
@@ -829,11 +857,13 @@ export function Contact({ contact, profile, socialLinks }) {
                       transition-all duration-300
                       hover:-translate-y-0.5
                       hover:brightness-110
+                      disabled:cursor-not-allowed
+                      disabled:opacity-60
                     "
                   >
                     <SendIcon />
 
-                    Send Message
+                    {isSending ? "Sending..." : "Send Message"}
 
                     <ArrowIcon
                       className="
@@ -851,9 +881,18 @@ export function Contact({ contact, profile, socialLinks }) {
                       text-[var(--muted)]
                     "
                   >
-                    Opens your email app to send the message.
+                    Your message will be sent securely.
                   </p>
                 </div>
+
+                {formStatus.message && (
+                  <p
+                    aria-live="polite"
+                    className={`mt-4 text-sm ${formStatus.type === "success" ? "text-emerald-400" : "text-[var(--accent)]"}`}
+                  >
+                    {formStatus.message}
+                  </p>
+                )}
               </form>
             </div>
           </div>
