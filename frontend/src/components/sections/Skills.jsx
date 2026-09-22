@@ -2,25 +2,6 @@
 
 import { useMemo, useState } from "react";
 
-const fallbackCategories = [
-  {
-    id: "frontend",
-    label: "Frontend",
-  },
-  {
-    id: "backend",
-    label: "Backend",
-  },
-  {
-    id: "database",
-    label: "Database",
-  },
-  {
-    id: "tools",
-    label: "Tools & Others",
-  },
-];
-
 const skillConfig = {
   html: { category: "frontend", color: "#f97316" },
   css: { category: "frontend", color: "#3b82f6" },
@@ -250,7 +231,13 @@ function getSkillColor(name) {
 }
 
 function SkillCard({ skill }) {
-  const level = Math.min(Math.max(Number(skill.level) || 0, 0), 100);
+  const hasProficiency = skill.level !== null
+    && skill.level !== undefined
+    && skill.level !== ""
+    && Number.isFinite(Number(skill.level));
+  const level = hasProficiency
+    ? Math.min(Math.max(Number(skill.level), 0), 100)
+    : null;
 
   const color = getSkillColor(skill.name);
 
@@ -286,39 +273,43 @@ function SkillCard({ skill }) {
             </h3>
           </div>
 
-          <span
-            className="shrink-0 text-xs font-bold tracking-[-0.03em] sm:text-sm"
-            style={{ color }}
-          >
-            {level}%
-          </span>
+          {hasProficiency && (
+            <span
+              className="shrink-0 text-xs font-bold tracking-[-0.03em] sm:text-sm"
+              style={{ color }}
+            >
+              {level}%
+            </span>
+          )}
         </div>
 
-        <div className="mt-3 sm:mt-5">
-          <div className="relative h-[5px] overflow-visible rounded-full bg-[var(--foreground)]/[0.07]">
-            <div
-              role="progressbar"
-              aria-label={`${skill.name} skill level ${level}%`}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={level}
-              className="relative h-full rounded-full transition-[width] duration-700 ease-out"
-              style={{
-                width: `${level}%`,
-                background: `linear-gradient(90deg, ${withAlpha(color, 0.85)}, ${color})`,
-                boxShadow: "none",
-              }}
-            >
-              <span
-                className="absolute right-0 top-1/2 h-2.5 w-2.5 -translate-y-1/2 translate-x-1/2 rounded-full border-2 border-[var(--surface)]"
+        {hasProficiency && (
+          <div className="mt-3 sm:mt-5">
+            <div className="relative h-[5px] overflow-visible rounded-full bg-[var(--foreground)]/[0.07]">
+              <div
+                role="progressbar"
+                aria-label={`${skill.name} skill level ${level}%`}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={level}
+                className="relative h-full rounded-full transition-[width] duration-700 ease-out"
                 style={{
-                  backgroundColor: color,
+                  width: `${level}%`,
+                  background: `linear-gradient(90deg, ${withAlpha(color, 0.85)}, ${color})`,
                   boxShadow: "none",
                 }}
-              />
+              >
+                <span
+                  className="absolute right-0 top-1/2 h-2.5 w-2.5 -translate-y-1/2 translate-x-1/2 rounded-full border-2 border-[var(--surface)]"
+                  style={{
+                    backgroundColor: color,
+                    boxShadow: "none",
+                  }}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </article>
   );
@@ -370,42 +361,25 @@ function getCmsSkills(categories) {
         id: skill._id,
         name: skill.name,
         icon: skill.iconUrl || "",
-        level: skill.proficiency ?? 0,
+        level: skill.proficiency,
         category: category.slug || category._id,
         order: skill.order,
       })),
     }));
 }
 
-export function Skills({ skills, cmsCategories }) {
+export function Skills({ cmsCategories }) {
   const [activeCategory, setActiveCategory] = useState("frontend");
 
   const cmsSkills = useMemo(() => getCmsSkills(cmsCategories), [cmsCategories]);
-  const categories = cmsSkills.length
-    ? cmsSkills.map(({ id, label }) => ({ id, label }))
-    : fallbackCategories;
+  const categories = cmsSkills.map(({ id, label }) => ({ id, label }));
   const selectedCategory = categories.some((category) => category.id === activeCategory)
     ? activeCategory
     : categories[0]?.id;
 
   const items = useMemo(() => {
-    if (cmsSkills.length) {
-      return cmsSkills.flatMap((category) => category.skills);
-    }
-
-    if (!skills?.items?.length) return [];
-
-    return [...skills.items]
-      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-      .map((skill) => {
-        const config = getSkillConfig(skill.name);
-
-        return {
-          ...skill,
-          category: skill.category || config?.category || "tools",
-        };
-      });
-  }, [cmsSkills, skills]);
+    return cmsSkills.flatMap((category) => category.skills);
+  }, [cmsSkills]);
 
   const filteredSkills = items.filter(
     (skill) => skill.category === selectedCategory,
@@ -432,7 +406,7 @@ export function Skills({ skills, cmsCategories }) {
             <span className="h-px w-8 bg-gradient-to-r from-transparent to-[var(--primary)]" />
 
             <span className="text-[10px] font-black uppercase tracking-[0.24em] text-[var(--accent)]">
-              {skills?.eyebrow || "My Skills"}
+              My Skills
             </span>
 
             <span className="h-px w-8 bg-gradient-to-l from-transparent to-[var(--primary)]" />
@@ -445,11 +419,9 @@ export function Skills({ skills, cmsCategories }) {
             Technologies I work with.
           </h2>
 
-          {skills?.description && (
-            <p className="mx-auto mt-5 max-w-2xl text-sm leading-6 text-[var(--muted)] sm:text-[15px]">
-              {skills.description}
-            </p>
-          )}
+          <p className="mx-auto mt-5 max-w-2xl text-sm leading-6 text-[var(--muted)] sm:text-[15px]">
+            Tools I use to turn ideas into products.
+          </p>
         </div>
 
         {/* category tabs */}

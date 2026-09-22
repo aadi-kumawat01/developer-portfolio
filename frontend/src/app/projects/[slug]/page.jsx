@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { portfolio } from "@/data/portfolio";
 import { getPublicProject } from "@/lib/content/projects";
 
 function ProjectAction({ href, children, primary = false }) {
@@ -73,10 +72,7 @@ function ProjectImage({ src, alt, className = "" }) {
 
 export default async function ProjectDetailsPage({ params }) {
   const { slug } = await params;
-  const fallbackProject = portfolio.projects.items.find(
-    (item) => item.slug === slug,
-  );
-  const project = await getPublicProject(slug) || fallbackProject;
+  const project = await getPublicProject(slug);
 
   if (!project) {
     notFound();

@@ -244,21 +244,9 @@ export function Contact({ contact, profile, socialLinks }) {
     profile?.location ||
     "";
 
-  const fallbackSocials = [
-    {
-      name: "GitHub",
-      href: contact?.socials?.github || "",
-      icon: <GithubIcon />,
-    },
-    {
-      name: "LinkedIn",
-      href: contact?.socials?.linkedin || "",
-      icon: <LinkedinIcon />,
-    },
-  ].filter((social) => social.href);
   const socials = Array.isArray(socialLinks)
     ? socialLinks.map((link) => ({ name: link.label, href: link.url, icon: socialIcon(link.iconKey) }))
-    : fallbackSocials;
+    : [];
 
   async function copyEmail() {
     if (!email) return;

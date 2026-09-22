@@ -3,6 +3,8 @@ import Link from "next/link";
 
 export function About({ about, profile }) {
   const displayName = profile.name || profile.brandLabel;
+  const stats = Array.isArray(about.stats) ? about.stats : [];
+  const services = Array.isArray(about.services) ? about.services : [];
 
   return (
     <section
@@ -105,7 +107,7 @@ export function About({ about, profile }) {
           </p>
 
           <div className="mt-5 grid grid-cols-1 gap-2 min-[360px]:grid-cols-3">
-            {about.stats.map((stat) => (
+            {stats.map((stat) => (
               <div
                 key={stat.label}
                 className="rounded-[17px] border border-[var(--border)] bg-[var(--surface)]/55 px-3 py-3 backdrop-blur-md sm:px-4"
@@ -121,7 +123,7 @@ export function About({ about, profile }) {
           </div>
 
           <div className="mt-4 grid grid-cols-1 gap-2 min-[360px]:grid-cols-2">
-            {about.services.map((service) => (
+            {services.map((service) => (
               <div
                 key={service}
                 className="flex min-h-11 items-center gap-2 rounded-[15px] border border-[var(--border)] bg-[var(--surface)]/45 px-3 py-2 backdrop-blur-md sm:px-4"

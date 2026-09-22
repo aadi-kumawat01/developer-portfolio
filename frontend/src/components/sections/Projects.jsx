@@ -400,21 +400,8 @@ function SideProject({
   );
 }
 
-export function Projects({ projects, cmsItems }) {
-  if (!projects?.items?.length) return null;
-
-  /*
-   * Homepage par sirf featured projects show honge.
-   * Agar old data me featured field nahi hai,
-   * to temporarily first 3 projects fallback honge.
-   */
-  const featuredProjects = Array.isArray(cmsItems) && cmsItems.length
-    ? cmsItems
-    : projects.items.filter(
-    (project) => project.featured === true,
-  );
-
-  const items = (featuredProjects.length > 0 ? featuredProjects : projects.items).slice(0, 3);
+export function Projects({ cmsItems }) {
+  const items = Array.isArray(cmsItems) ? cmsItems.slice(0, 3) : [];
 
   if (!items.length) return null;
 
@@ -488,7 +475,7 @@ export function Projects({ projects, cmsItems }) {
             </h2>
 
             <p className="mt-5 max-w-2xl text-[15px] leading-7 text-[var(--muted)] sm:text-base">
-              {projects.description}
+              A selection of work focused on modern UI, responsive experiences and practical full-stack development.
             </p>
           </div>
 

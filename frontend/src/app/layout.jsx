@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
       data-theme={settings.defaultTheme}
       suppressHydrationWarning
     >
-      <head>
+      <body className="antialiased">
         <Script
           id="theme-bootstrap"
           strategy="beforeInteractive"
@@ -37,8 +37,8 @@ export default function RootLayout({ children }) {
             __html: themeBootstrap,
           }}
         />
-      </head>
-      <body className="antialiased">{children}</body>
+        {children}
+      </body>
     </html>
   );
 }

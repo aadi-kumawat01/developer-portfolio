@@ -18,8 +18,6 @@ export default async function HomePage() {
   const {
     hero,
     about,
-    skills,
-    projects,
     contact,
     profile,
   } = getPortfolio();
@@ -66,12 +64,8 @@ export default async function HomePage() {
       eyebrow: cmsAbout.eyebrow || about.eyebrow,
       heading: cmsAbout.heading || about.heading,
       description: cmsAbout.description || about.description,
-      stats: siteContent.aboutStats?.length
-        ? siteContent.aboutStats.map(({ value, label }) => ({ value, label }))
-        : about.stats,
-      services: siteContent.aboutHighlights?.length
-        ? siteContent.aboutHighlights.map(({ title }) => title)
-        : about.services,
+      stats: (siteContent.aboutStats || []).map(({ value, label }) => ({ value, label })),
+      services: (siteContent.aboutHighlights || []).map(({ title }) => title),
     }
     : about;
   const cmsContact = publicContactContent.contact;
@@ -85,9 +79,9 @@ export default async function HomePage() {
       {(!cmsAboutIsReady || cmsAbout.visible !== false) && <About about={cmsAboutData} profile={cmsProfile} />}
       <Education items={publicEducationContent.education} learningItems={publicEducationContent.learning} />
 
-      <Skills skills={skills} cmsCategories={publicSkillsContent} />
+      <Skills cmsCategories={publicSkillsContent} />
 
-      <Projects projects={projects} cmsItems={featuredProjects} />
+      <Projects cmsItems={featuredProjects} />
       <Testimonials items={testimonials} />
       {(!cmsContactIsReady || cmsContact.visible !== false) && <Contact contact={cmsContactData} profile={profile} socialLinks={publicContactContent.socialLinks} />}
       <Footer />

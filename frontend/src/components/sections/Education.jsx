@@ -1,40 +1,3 @@
-const fallbackEducation = [
-    {
-        id: "secondary",
-        type: "Secondary Education",
-        title: "Class 10th",
-        institute: "Bright Senior Secondary School, Sikar",
-        year: "2022",
-        score: "79%",
-        description:
-            "Completed my secondary education with a strong academic foundation and consistent performance across core subjects.",
-        status: "Completed",
-    },
-    {
-        id: "higher-secondary",
-        type: "Higher Secondary Education",
-        title: "Class 12th — Science (Mathematics)",
-        institute: "Bright Senior Secondary School, Sikar",
-        year: "2024",
-        score: "90.60%",
-        description:
-            "Completed higher secondary education in the Science stream with Mathematics, achieving a strong academic score and improving analytical thinking.",
-        status: "Completed",
-    },
-    {
-        id: "college",
-        type: "Undergraduate",
-        title: "Bachelor's Degree — Arts",
-        institute:
-            "Pandit Deendayal Upadhyaya Shekhawati University, Sikar",
-        year: "Currently in 2nd Year",
-        score: "2nd Year",
-        description:
-            "Currently pursuing a Bachelor's degree in Arts while learning web development independently and gaining practical experience by building real projects.",
-        status: "Ongoing",
-    },
-];
-
 function SchoolIcon() {
     return (
         <svg
@@ -224,13 +187,15 @@ function displayStatus(status) {
 }
 
 export function Education({ items, learningItems }) {
-    const cmsEducation = Array.isArray(items) && items.length
+    const cmsEducation = Array.isArray(items)
         ? items.filter((item) => item?.title).map(educationItem)
-        : fallbackEducation;
+        : [];
     const cmsLearning = Array.isArray(learningItems)
         ? learningItems.filter((item) => item?.title).map(learningItem)
         : [];
     const timelineItems = [...cmsEducation, ...cmsLearning];
+
+    if (!timelineItems.length) return null;
 
     return (
         <section
