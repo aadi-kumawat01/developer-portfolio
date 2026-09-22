@@ -252,7 +252,14 @@ function SocialLink({ name, href, icon }) {
   );
 }
 
-export function Contact({ contact, profile }) {
+function socialIcon(iconKey) {
+  if (iconKey === "github") return <GithubIcon />;
+  if (iconKey === "linkedin") return <LinkedinIcon />;
+  if (iconKey === "instagram") return <InstagramIcon />;
+  return <ArrowIcon className="h-5 w-5" />;
+}
+
+export function Contact({ contact, profile, socialLinks }) {
   const [copied, setCopied] = useState(false);
 
   const email =
@@ -265,7 +272,7 @@ export function Contact({ contact, profile }) {
     profile?.location ||
     "Jaipur, Rajasthan, India";
 
-  const socials = [
+  const fallbackSocials = [
     {
       name: "GitHub",
       href: contact?.socials?.github || "",
@@ -282,6 +289,9 @@ export function Contact({ contact, profile }) {
       icon: <InstagramIcon />,
     },
   ];
+  const socials = Array.isArray(socialLinks) && socialLinks.length
+    ? socialLinks.map((link) => ({ name: link.label, href: link.url, icon: socialIcon(link.iconKey) }))
+    : fallbackSocials;
 
   async function copyEmail() {
     if (!email) return;
@@ -410,11 +420,10 @@ export function Contact({ contact, profile }) {
                 text-[var(--foreground)]
               "
             >
-              Let&apos;s build
-
-              <span className="block text-[var(--accent)]">
-                something useful.
-              </span>
+              {contact?.heading || <>
+                Let&apos;s build
+                <span className="block text-[var(--accent)]">something useful.</span>
+              </>}
             </h2>
 
             <p
@@ -459,7 +468,7 @@ export function Contact({ contact, profile }) {
                   text-[var(--muted)]
                 "
               >
-                Open to new opportunities
+                {contact?.availabilityText || "Open to new opportunities"}
               </span>
             </div>
 
@@ -666,19 +675,18 @@ export function Contact({ contact, profile }) {
                     sm:text-3xl
                   "
                 >
-                  Tell me about your project.
+                  {contact?.formHeading || "Tell me about your project."}
                 </h3>
 
-                <p
+                {contact?.formDescription && <p
                   className="
                     mt-2 max-w-xl
                     text-sm leading-6
                     text-[var(--muted)]
                   "
                 >
-                  Share the idea, requirements or goal.
-                  We can start from there.
-                </p>
+                  {contact.formDescription}
+                </p>}
               </div>
 
               <form

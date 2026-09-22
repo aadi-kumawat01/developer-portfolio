@@ -9,6 +9,7 @@ import { getPublicEducationContent } from "@/lib/content/education";
 import { getPublicSkillsContent } from "@/lib/content/skills";
 import { getFeaturedProjects } from "@/lib/content/projects";
 import { getPublicTestimonials } from "@/lib/content/testimonials";
+import { getPublicContactContent } from "@/lib/content/contact";
 import Testimonials from "@/components/sections/Testimonials";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/layout/Footer";
@@ -27,6 +28,7 @@ export default async function HomePage() {
   const publicSkillsContent = await getPublicSkillsContent();
   const featuredProjects = await getFeaturedProjects();
   const testimonials = await getPublicTestimonials();
+  const publicContactContent = await getPublicContactContent();
   const cmsHeroIsReady = hasSiteContent(siteContent?.hero);
   const cmsAboutIsReady = hasSiteContent(siteContent?.about)
     || siteContent?.aboutStats?.length
@@ -72,6 +74,9 @@ export default async function HomePage() {
         : about.services,
     }
     : about;
+  const cmsContact = publicContactContent.contact;
+  const cmsContactIsReady = hasSiteContent(cmsContact);
+  const cmsContactData = cmsContactIsReady ? { ...contact, ...cmsContact } : contact;
 
   return (
     <main id="main-content" tabIndex={-1}>
@@ -84,7 +89,7 @@ export default async function HomePage() {
 
       <Projects projects={projects} cmsItems={featuredProjects} />
       <Testimonials items={testimonials} />
-      <Contact contact={contact} profile={profile} />
+      {(!cmsContactIsReady || cmsContact.visible !== false) && <Contact contact={cmsContactData} profile={profile} socialLinks={publicContactContent.socialLinks} />}
       <Footer />
     </main>
   );
