@@ -1,4 +1,4 @@
-const education = [
+const fallbackEducation = [
     {
         id: "secondary",
         type: "Secondary Education",
@@ -89,7 +89,7 @@ function CalendarIcon() {
 }
 
 function EducationCard({ item, index }) {
-    const ongoing = item.status === "Ongoing";
+    const ongoing = item.status?.toLowerCase() === "ongoing";
 
     return (
         <article className="group relative">
@@ -138,13 +138,13 @@ function EducationCard({ item, index }) {
                                         {item.title}
                                     </h3>
 
-                                    <p className="mt-1 text-[13px] font-medium leading-5 text-[var(--muted)] sm:mt-1.5 sm:text-sm sm:leading-6">
+                                    {item.institute && <p className="mt-1 text-[13px] font-medium leading-5 text-[var(--muted)] sm:mt-1.5 sm:text-sm sm:leading-6">
                                         {item.institute}
-                                    </p>
+                                    </p>}
                                 </div>
                             </div>
 
-                            <span
+                            {item.status && <span
                                 className={`inline-flex w-fit shrink-0 items-center gap-1.5 rounded-full border px-2 py-1 text-[8px] font-black uppercase tracking-[0.11em] sm:gap-2 sm:px-3 sm:py-1.5 sm:text-[9px] sm:tracking-[0.13em] ${ongoing
                                     ? "border-[var(--accent)]/25 bg-[var(--accent)]/[0.08] text-[var(--accent)]"
                                     : "border-[var(--border)] bg-[var(--foreground)]/[0.035] text-[var(--muted)]"
@@ -158,25 +158,25 @@ function EducationCard({ item, index }) {
                                 )}
 
                                 {item.status}
-                            </span>
+                            </span>}
                         </div>
 
                         {/* Meta */}
                         <div className="mt-3 flex flex-wrap gap-1.5 sm:mt-4 sm:gap-2">
-                            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--background)]/35 px-2.5 py-1 text-[10px] font-semibold text-[var(--muted)] sm:gap-2 sm:px-3 sm:py-1.5 sm:text-[11px]">
+                            {item.year && <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--background)]/35 px-2.5 py-1 text-[10px] font-semibold text-[var(--muted)] sm:gap-2 sm:px-3 sm:py-1.5 sm:text-[11px]">
                                 <CalendarIcon />
                                 {item.year}
-                            </span>
+                            </span>}
 
-                            <span className="inline-flex items-center rounded-full border border-[var(--primary)]/20 bg-[var(--primary)]/[0.07] px-2.5 py-1 text-[10px] font-bold text-[var(--accent)] sm:px-3 sm:py-1.5 sm:text-[11px]">
+                            {item.score && <span className="inline-flex items-center rounded-full border border-[var(--primary)]/20 bg-[var(--primary)]/[0.07] px-2.5 py-1 text-[10px] font-bold text-[var(--accent)] sm:px-3 sm:py-1.5 sm:text-[11px]">
                                 {item.score}
-                            </span>
+                            </span>}
                         </div>
 
                         {/* Description */}
-                        <p className="mt-3 max-w-3xl text-[12px] leading-5 text-[var(--muted)] sm:mt-5 sm:text-sm sm:leading-6">
+                        {item.description && <p className="mt-3 max-w-3xl text-[12px] leading-5 text-[var(--muted)] sm:mt-5 sm:text-sm sm:leading-6">
                             {item.description}
-                        </p>
+                        </p>}
 
                         {/* number */}
                         <span className="absolute bottom-0 right-0 text-[11px] font-black tracking-[0.15em] text-[var(--muted)]/25">
@@ -189,7 +189,49 @@ function EducationCard({ item, index }) {
     );
 }
 
-export function Education() {
+function educationItem(item, index) {
+    const institute = [item.institution, item.college, item.university, item.board].filter(Boolean).join(" · ");
+    const year = item.yearLabel || [item.startDate, item.endDate].filter(Boolean).join(" – ");
+
+    return {
+        id: item._id || `education-${index}`,
+        type: item.type || "Education",
+        title: item.title,
+        institute,
+        year,
+        score: item.percentage || item.marksLabel || item.badgeText || "",
+        description: item.description || "",
+        status: displayStatus(item.status),
+    };
+}
+
+function learningItem(item, index) {
+    return {
+        id: item._id || `learning-${index}`,
+        type: item.type || "Learning",
+        title: item.title,
+        institute: item.institution || "",
+        year: [item.startDate, item.endDate].filter(Boolean).join(" – ") || item.duration || "",
+        score: item.certificateStatus || "",
+        description: item.description || "",
+        status: displayStatus(item.status),
+    };
+}
+
+function displayStatus(status) {
+    if (!status) return "";
+    return `${status.charAt(0).toUpperCase()}${status.slice(1)}`;
+}
+
+export function Education({ items, learningItems }) {
+    const cmsEducation = Array.isArray(items) && items.length
+        ? items.filter((item) => item?.title).map(educationItem)
+        : fallbackEducation;
+    const cmsLearning = Array.isArray(learningItems)
+        ? learningItems.filter((item) => item?.title).map(learningItem)
+        : [];
+    const timelineItems = [...cmsEducation, ...cmsLearning];
+
     return (
         <section
             id="education"
@@ -244,7 +286,7 @@ export function Education() {
                     />
 
                     <div className="grid gap-2.5 sm:gap-3 md:grid-cols-2 min-[1152px]:!grid-cols-1 min-[1152px]:gap-5">
-                        {education.map((item, index) => (
+                        {timelineItems.map((item, index) => (
                             <EducationCard
                                 key={item.id}
                                 item={item}
