@@ -29,6 +29,7 @@ import testimonialsRouter from "./routes/testimonials.routes.js";
 import { notFound } from "./middleware/notFound.middleware.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 import { corsOrigin, requireTrustedAdminOrigin } from "./middleware/origin.middleware.js";
+import { apiRateLimit } from "./middleware/rateLimit.middleware.js";
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use(cors({ origin: corsOrigin, credentials: true }));
 app.use(express.json({ limit: "200kb" }));
 app.use(express.urlencoded({ extended: true, limit: "200kb" }));
 app.use(cookieParser());
+app.use("/api", apiRateLimit);
 app.use("/api/admin", requireTrustedAdminOrigin);
 
 app.use("/api/health", healthRouter);

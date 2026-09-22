@@ -89,8 +89,12 @@ export function useVideoScrub(heroRef, videoRef, enabled) {
     if (!enabled) {
       stopAnimationFrame();
       mediaReadyRef.current = false;
-      setMediaReady(false);
-      setMediaFailed(false);
+      const resetTimer = window.setTimeout(() => {
+        setMediaReady(false);
+        setMediaFailed(false);
+      }, 0);
+
+      return () => window.clearTimeout(resetTimer);
     }
   }, [enabled, stopAnimationFrame]);
 

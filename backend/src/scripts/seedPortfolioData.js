@@ -161,7 +161,7 @@ const projects = [
     shortDescription: "A modern responsive portfolio website built to showcase my skills, projects and development journey with a clean and interactive user experience.",
     description: "This portfolio presents my development work in a focused, responsive experience. It brings together the sections that explain who I am, what I am learning and the projects I am building. The interface uses the same dark visual system across desktop, tablet and phone layouts, with navigation and project pages designed to keep the content easy to explore.",
     techStack: ["Next.js", "React.js", "Tailwind CSS"],
-    thumbnailUrl: "/images/projects/portfolio.jpg",
+    thumbnailUrl: "",
     screenshots: [],
     liveUrl: "",
     githubUrl: "",

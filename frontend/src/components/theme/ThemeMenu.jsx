@@ -19,6 +19,12 @@ function getThemeChoice() {
   return document.documentElement.dataset.themeChoice || "default";
 }
 
+function applyThemeChoice(value, defaultTheme) {
+  document.documentElement.dataset.theme = value === "default" ? defaultTheme : value;
+  document.documentElement.dataset.themeChoice = value;
+  window.dispatchEvent(new Event(THEME_EVENT));
+}
+
 export function ThemeMenu({ defaultTheme }) {
   const groupName = useId();
   const choice = useSyncExternalStore(subscribe, getThemeChoice, () => "default");
@@ -32,11 +38,7 @@ export function ThemeMenu({ defaultTheme }) {
           ? event.newValue
           : "default";
 
-      document.documentElement.dataset.themeChoice = savedTheme;
-      document.documentElement.dataset.theme =
-        savedTheme === "default" ? defaultTheme : savedTheme;
-
-      window.dispatchEvent(new Event(THEME_EVENT));
+      applyThemeChoice(savedTheme, defaultTheme);
     };
 
     window.addEventListener("storage", syncFromStorage);
@@ -54,9 +56,7 @@ export function ThemeMenu({ defaultTheme }) {
       // Theme switching still works even if browser storage is unavailable.
     }
 
-    document.documentElement.dataset.theme = value === "default" ? defaultTheme : value;
-    document.documentElement.dataset.themeChoice = value;
-    window.dispatchEvent(new Event(THEME_EVENT));
+    applyThemeChoice(value, defaultTheme);
   };
 
   const options = [

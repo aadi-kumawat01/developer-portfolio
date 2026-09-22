@@ -28,8 +28,8 @@ export default function ResumePage() {
                     </Link>
 
                     <a
-                        href="/resume/Aditya-Kumawat-Resume.pdf"
-                        download="Aditya-Kumawat-Resume.pdf"
+                        href="/resume/Aditya_Kumawat_Resume.pdf"
+                        download="Aditya_Kumawat_Resume.pdf"
                         className="inline-flex w-fit items-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-zinc-200"
                     >
                         Download Resume

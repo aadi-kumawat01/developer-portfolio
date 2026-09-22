@@ -169,16 +169,22 @@ function ProjectImage({ project, big = false }) {
         }
       `}
     >
-      <img
-        src={project.image}
-        alt={`${project.title} project screenshot`}
-        loading="lazy"
-        className="
-          h-full w-full object-cover object-top
-          transition-transform duration-700
-          group-hover:scale-[1.025]
-        "
-      />
+      {project.image ? (
+        <img
+          src={project.image}
+          alt={`${project.title} project screenshot`}
+          loading="lazy"
+          className="
+            h-full w-full object-cover object-top
+            transition-transform duration-700
+            group-hover:scale-[1.025]
+          "
+        />
+      ) : (
+        <div className="grid h-full w-full place-items-center px-6 text-center text-sm font-semibold text-[var(--muted)]">
+          Project preview will be added soon.
+        </div>
+      )}
 
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
     </div>
