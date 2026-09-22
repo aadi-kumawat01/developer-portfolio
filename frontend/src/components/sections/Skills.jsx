@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 
-const categories = [
+const fallbackCategories = [
   {
     id: "frontend",
     label: "Frontend",
@@ -358,10 +358,41 @@ function MernCard({ item }) {
   );
 }
 
-export function Skills({ skills }) {
+function getCmsSkills(categories) {
+  if (!Array.isArray(categories)) return [];
+
+  return categories
+    .filter((category) => category?.name && Array.isArray(category.skills) && category.skills.length)
+    .map((category) => ({
+      id: category.slug || category._id,
+      label: category.name,
+      skills: category.skills.map((skill) => ({
+        id: skill._id,
+        name: skill.name,
+        icon: skill.iconUrl || "",
+        level: skill.proficiency ?? 0,
+        category: category.slug || category._id,
+        order: skill.order,
+      })),
+    }));
+}
+
+export function Skills({ skills, cmsCategories }) {
   const [activeCategory, setActiveCategory] = useState("frontend");
 
+  const cmsSkills = useMemo(() => getCmsSkills(cmsCategories), [cmsCategories]);
+  const categories = cmsSkills.length
+    ? cmsSkills.map(({ id, label }) => ({ id, label }))
+    : fallbackCategories;
+  const selectedCategory = categories.some((category) => category.id === activeCategory)
+    ? activeCategory
+    : categories[0]?.id;
+
   const items = useMemo(() => {
+    if (cmsSkills.length) {
+      return cmsSkills.flatMap((category) => category.skills);
+    }
+
     if (!skills?.items?.length) return [];
 
     return [...skills.items]
@@ -374,10 +405,10 @@ export function Skills({ skills }) {
           category: skill.category || config?.category || "tools",
         };
       });
-  }, [skills]);
+  }, [cmsSkills, skills]);
 
   const filteredSkills = items.filter(
-    (skill) => skill.category === activeCategory,
+    (skill) => skill.category === selectedCategory,
   );
 
   if (!items.length) return null;
@@ -429,7 +460,7 @@ export function Skills({ skills }) {
             className="mx-auto flex w-max items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)]/40 p-1.5 backdrop-blur-xl"
           >
             {categories.map((category) => {
-              const active = activeCategory === category.id;
+              const active = selectedCategory === category.id;
 
               return (
                 <button
@@ -462,7 +493,7 @@ export function Skills({ skills }) {
 
         {/* skills grid */}
         <div
-          key={activeCategory}
+          key={selectedCategory}
           role="tabpanel"
           className="mt-6 grid animate-[skillFade_.35s_ease-out] gap-2 min-[360px]:grid-cols-2 md:grid-cols-3 md:gap-3"
         >

@@ -6,6 +6,7 @@ import { Projects } from "@/components/sections/Projects";
 import { getPortfolio } from "@/lib/content/portfolio";
 import { getPublicSiteContent, hasSiteContent } from "@/lib/content/site";
 import { getPublicEducationContent } from "@/lib/content/education";
+import { getPublicSkillsContent } from "@/lib/content/skills";
 import Testimonials from "@/components/sections/Testimonials";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/layout/Footer";
@@ -21,6 +22,7 @@ export default async function HomePage() {
   } = getPortfolio();
   const siteContent = await getPublicSiteContent();
   const publicEducationContent = await getPublicEducationContent();
+  const publicSkillsContent = await getPublicSkillsContent();
   const cmsHeroIsReady = hasSiteContent(siteContent?.hero);
   const cmsAboutIsReady = hasSiteContent(siteContent?.about)
     || siteContent?.aboutStats?.length
@@ -74,7 +76,7 @@ export default async function HomePage() {
       {(!cmsAboutIsReady || cmsAbout.visible !== false) && <About about={cmsAboutData} profile={cmsProfile} />}
       <Education items={publicEducationContent.education} learningItems={publicEducationContent.learning} />
 
-      <Skills skills={skills} />
+      <Skills skills={skills} cmsCategories={publicSkillsContent} />
 
       <Projects projects={projects} />
       <Testimonials />
