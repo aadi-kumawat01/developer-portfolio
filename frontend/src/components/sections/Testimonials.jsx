@@ -2,57 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-const testimonials = [
-  {
-    id: 1,
-    name: "Rahul Sharma",
-    role: "Founder, Startup",
-    review:
-      "Aditya understood exactly what we needed and turned the idea into a clean, responsive website. The entire process was smooth and the final result felt polished.",
-    initials: "RS",
-  },
-  {
-    id: 2,
-    name: "Neha Verma",
-    role: "Digital Marketer",
-    review:
-      "Working with Aditya was a great experience. He focused on both design and functionality, and the website feels modern, fast and easy to use.",
-    initials: "NV",
-  },
-  {
-    id: 3,
-    name: "Aman Gupta",
-    role: "Business Owner",
-    review:
-      "What I liked most was his attention to detail. Everything stayed clean, responsive and professional without making the design feel complicated.",
-    initials: "AG",
-  },
-  {
-    id: 4,
-    name: "Priya Mehta",
-    role: "Creative Professional",
-    review:
-      "The final website feels professional without being over-designed. The interface is polished and everything works smoothly across different devices.",
-    initials: "PM",
-  },
-  {
-    id: 5,
-    name: "Kunal Jain",
-    role: "Entrepreneur",
-    review:
-      "Aditya understood the requirements quickly and converted them into a modern interface. The final result was clean, practical and visually impressive.",
-    initials: "KJ",
-  },
-  {
-    id: 6,
-    name: "Riya Kapoor",
-    role: "Brand Consultant",
-    review:
-      "The balance between design and usability was excellent. Every detail felt intentional and the finished website looked clean and professional.",
-    initials: "RK",
-  },
-];
-
 const SLIDE_TIME = 3800;
 
 function QuoteIcon() {
@@ -81,12 +30,13 @@ function StarIcon() {
   );
 }
 
-export default function Testimonials() {
-  const [activeIndex, setActiveIndex] = useState(1);
+export default function Testimonials({ items = [] }) {
+  const testimonials = Array.isArray(items) ? items : [];
+  const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || !testimonials.length) return;
 
     const timer = setInterval(() => {
       setActiveIndex((current) => {
@@ -95,7 +45,9 @@ export default function Testimonials() {
     }, SLIDE_TIME);
 
     return () => clearInterval(timer);
-  }, [isPaused]);
+  }, [isPaused, testimonials.length]);
+
+  if (!testimonials.length) return null;
 
   const getPosition = (index) => {
     const total = testimonials.length;
@@ -379,7 +331,7 @@ export default function Testimonials() {
                       }
                     `}
                   >
-                    {[1, 2, 3, 4, 5].map((star) => (
+                    {Array.from({ length: testimonial.rating || 0 }, (_, index) => index + 1).map((star) => (
                       <StarIcon key={star} />
                     ))}
                   </div>
@@ -461,7 +413,7 @@ export default function Testimonials() {
                       }
                     `}
                   >
-                    {testimonial.initials}
+                    {testimonial.avatarUrl ? <img src={testimonial.avatarUrl} alt="" className="h-full w-full rounded-full object-cover" /> : testimonial.initials || testimonial.name?.slice(0, 2)}
                   </div>
 
                   <div className="min-w-0">
@@ -484,7 +436,7 @@ export default function Testimonials() {
                       {testimonial.name}
                     </h3>
 
-                    <p
+                    {testimonial.role && <p
                       className={`
                         mt-1
                         truncate
@@ -498,7 +450,7 @@ export default function Testimonials() {
                       `}
                     >
                       {testimonial.role}
-                    </p>
+                    </p>}
                   </div>
                 </div>
 

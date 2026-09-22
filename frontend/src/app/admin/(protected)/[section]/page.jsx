@@ -6,6 +6,7 @@ import EducationManager from "@/components/admin/EducationManager";
 import LearningManager from "@/components/admin/LearningManager";
 import SkillsManager from "@/components/admin/SkillsManager";
 import ProjectsManager from "@/components/admin/ProjectsManager";
+import TestimonialsManager from "@/components/admin/TestimonialsManager";
 
 const sections = {
   hero: "Hero",
@@ -31,6 +32,7 @@ export default async function AdminSectionPage({ params }) {
   if (section === "learning") return <LearningManager />;
   if (section === "skills") return <SkillsManager />;
   if (section === "projects") return <ProjectsManager />;
+  if (section === "testimonials") return <TestimonialsManager />;
 
   return <AdminPlaceholder title={title} />;
 }
