@@ -1,8 +1,8 @@
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+import { publicApiBaseUrl } from "@/lib/content/public";
 
 async function getPublicItems(path) {
   try {
-    const response = await fetch(`${apiBaseUrl}${path}`, { cache: "no-store" });
+    const response = await fetch(`${publicApiBaseUrl}${path}`, { cache: "no-store" });
     if (!response.ok) return [];
 
     const payload = await response.json();

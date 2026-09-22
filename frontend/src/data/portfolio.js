@@ -105,15 +105,6 @@ export const portfolio = {
         category: "frontend",
         order: 7,
       },
-      {
-        id: "redux",
-        name: "Redux Toolkit",
-        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/redux/redux-original.svg",
-        level: 70,
-        category: "frontend",
-        order: 8,
-      },
-
       // Backend
 
       {
@@ -132,31 +123,6 @@ export const portfolio = {
         category: "backend",
         order: 10,
       },
-      {
-        id: "rest-api",
-        name: "REST APIs",
-        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastapi/fastapi-original.svg",
-        level: 82,
-        category: "backend",
-        order: 11,
-      },
-      {
-        id: "jwt",
-        name: "JWT Auth",
-        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/json/json-original.svg",
-        level: 75,
-        category: "backend",
-        order: 12,
-      },
-      {
-        id: "socketio",
-        name: "Socket.io",
-        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/socketio/socketio-original.svg",
-        level: 60,
-        category: "backend",
-        order: 13,
-      },
-
       // Database
 
       {
@@ -167,23 +133,6 @@ export const portfolio = {
         category: "database",
         order: 14,
       },
-      {
-        id: "mongoose",
-        name: "Mongoose",
-        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongoose/mongoose-original.svg",
-        level: 78,
-        category: "database",
-        order: 15,
-      },
-      {
-        id: "firebase",
-        name: "Firebase",
-        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-original.svg",
-        level: 60,
-        category: "database",
-        order: 16,
-      },
-
       // Tools
 
       {
@@ -193,54 +142,6 @@ export const portfolio = {
         level: 85,
         category: "tools",
         order: 17,
-      },
-      {
-        id: "github",
-        name: "GitHub",
-        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg",
-        level: 85,
-        category: "tools",
-        order: 18,
-      },
-      {
-        id: "vscode",
-        name: "VS Code",
-        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg",
-        level: 95,
-        category: "tools",
-        order: 19,
-      },
-      {
-        id: "postman",
-        name: "Postman",
-        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postman/postman-original.svg",
-        level: 80,
-        category: "tools",
-        order: 20,
-      },
-      {
-        id: "vite",
-        name: "Vite",
-        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg",
-        level: 75,
-        category: "tools",
-        order: 21,
-      },
-      {
-        id: "vercel",
-        name: "Vercel",
-        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vercel/vercel-original.svg",
-        level: 80,
-        category: "tools",
-        order: 22,
-      },
-      {
-        id: "netlify",
-        name: "Netlify",
-        icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/netlify/netlify-original.svg",
-        level: 75,
-        category: "tools",
-        order: 23,
       },
     ],
   },

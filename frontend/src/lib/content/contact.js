@@ -1,21 +1,15 @@
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
-async function getPublicData(path, fallback) {
-  try {
-    const response = await fetch(`${apiBaseUrl}${path}`, { cache: "no-store" });
-    if (!response.ok) return fallback;
-    const payload = await response.json();
-    return payload?.success ? payload.data : fallback;
-  } catch {
-    return fallback;
-  }
-}
+import { getPublicResponse } from "@/lib/content/public";
 
 export async function getPublicContactContent() {
-  const [contact, socialLinks] = await Promise.all([
-    getPublicData("/api/contact", null),
-    getPublicData("/api/social-links", []),
+  const [contactResponse, socialLinksResponse] = await Promise.all([
+    getPublicResponse("/api/contact"),
+    getPublicResponse("/api/social-links"),
   ]);
 
-  return { contact, socialLinks: Array.isArray(socialLinks) ? socialLinks : [] };
+  return {
+    contact: contactResponse.ok ? contactResponse.data : null,
+    socialLinks: socialLinksResponse.ok && Array.isArray(socialLinksResponse.data)
+      ? socialLinksResponse.data
+      : null,
+  };
 }

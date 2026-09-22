@@ -1,8 +1,8 @@
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+import { publicApiBaseUrl } from "@/lib/content/public";
 
 export async function getPublicSiteContent() {
   try {
-    const response = await fetch(`${apiBaseUrl}/api/site`, { cache: "no-store" });
+    const response = await fetch(`${publicApiBaseUrl}/api/site`, { cache: "no-store" });
 
     if (!response.ok) return null;
 

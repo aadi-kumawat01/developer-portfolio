@@ -1,8 +1,8 @@
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+import { publicApiBaseUrl } from "@/lib/content/public";
 
 export async function getPublicSkillsContent() {
   try {
-    const response = await fetch(`${apiBaseUrl}/api/skills`, { cache: "no-store" });
+    const response = await fetch(`${publicApiBaseUrl}/api/skills`, { cache: "no-store" });
     if (!response.ok) return [];
 
     const payload = await response.json();

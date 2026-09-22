@@ -1,4 +1,4 @@
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+import { publicApiBaseUrl } from "@/lib/content/public";
 
 export function mapCmsProject(project) {
   const category = typeof project.category === "object" ? project.category : null;
@@ -32,7 +32,7 @@ export function mapCmsProject(project) {
 
 async function getPublicData(path) {
   try {
-    const response = await fetch(`${apiBaseUrl}${path}`, { cache: "no-store" });
+    const response = await fetch(`${publicApiBaseUrl}${path}`, { cache: "no-store" });
     if (!response.ok) return null;
     const payload = await response.json();
     return payload?.success ? payload.data : null;

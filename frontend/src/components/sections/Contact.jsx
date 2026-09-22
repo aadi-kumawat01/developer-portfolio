@@ -143,37 +143,6 @@ function LinkedinIcon({ className = "h-5 w-5" }) {
   );
 }
 
-function InstagramIcon({ className = "h-5 w-5" }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-      className={className}
-    >
-      <rect
-        x="3"
-        y="3"
-        width="18"
-        height="18"
-        rx="5"
-        stroke="currentColor"
-        strokeWidth="1.8"
-      />
-
-      <circle
-        cx="12"
-        cy="12"
-        r="4"
-        stroke="currentColor"
-        strokeWidth="1.8"
-      />
-
-      <circle cx="17.4" cy="6.7" r="1" fill="currentColor" />
-    </svg>
-  );
-}
-
 function SocialLink({ name, href, icon }) {
   const available = Boolean(href);
 
@@ -255,7 +224,6 @@ function SocialLink({ name, href, icon }) {
 function socialIcon(iconKey) {
   if (iconKey === "github") return <GithubIcon />;
   if (iconKey === "linkedin") return <LinkedinIcon />;
-  if (iconKey === "instagram") return <InstagramIcon />;
   return <ArrowIcon className="h-5 w-5" />;
 }
 
@@ -265,12 +233,12 @@ export function Contact({ contact, profile, socialLinks }) {
   const email =
     contact?.email ||
     profile?.email ||
-    "aadityakumawat6165@gmail.com";
+    "";
 
   const location =
     contact?.location ||
     profile?.location ||
-    "Jaipur, Rajasthan, India";
+    "";
 
   const fallbackSocials = [
     {
@@ -283,13 +251,8 @@ export function Contact({ contact, profile, socialLinks }) {
       href: contact?.socials?.linkedin || "",
       icon: <LinkedinIcon />,
     },
-    {
-      name: "Instagram",
-      href: contact?.socials?.instagram || "",
-      icon: <InstagramIcon />,
-    },
-  ];
-  const socials = Array.isArray(socialLinks) && socialLinks.length
+  ].filter((social) => social.href);
+  const socials = Array.isArray(socialLinks)
     ? socialLinks.map((link) => ({ name: link.label, href: link.url, icon: socialIcon(link.iconKey) }))
     : fallbackSocials;
 
@@ -583,7 +546,7 @@ export function Contact({ contact, profile, socialLinks }) {
               </p>
             )}
 
-            <div className="mt-6">
+            {socials.length > 0 && <div className="mt-6">
               <div className="flex items-center justify-between gap-4">
                 <p
                   className="
@@ -615,7 +578,7 @@ export function Contact({ contact, profile, socialLinks }) {
                   />
                 ))}
               </div>
-            </div>
+            </div>}
           </div>
 
           <div
