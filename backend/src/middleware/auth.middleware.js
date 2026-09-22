@@ -1,8 +1,9 @@
 import jwt from "jsonwebtoken";
 import Admin from "../models/Admin.js";
+import { authCookieName } from "../config/authCookie.js";
 
 export async function requireAdmin(req, res, next) {
-  const token = req.cookies.adminToken;
+  const token = req.cookies[authCookieName];
 
   if (!token || !process.env.JWT_SECRET) {
     return res.status(401).json({

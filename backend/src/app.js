@@ -1,6 +1,7 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
+import helmet from "helmet";
 import aboutHighlightsRouter from "./routes/aboutHighlights.routes.js";
 import aboutStatsRouter from "./routes/aboutStats.routes.js";
 import adminRouter from "./routes/admin.routes.js";
@@ -27,16 +28,16 @@ import socialLinksRouter from "./routes/socialLinks.routes.js";
 import testimonialsRouter from "./routes/testimonials.routes.js";
 import { notFound } from "./middleware/notFound.middleware.js";
 import { errorHandler } from "./middleware/error.middleware.js";
+import { corsOrigin, requireTrustedAdminOrigin } from "./middleware/origin.middleware.js";
 
 const app = express();
 
-app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
-  credentials: true,
-}));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(helmet());
+app.use(cors({ origin: corsOrigin, credentials: true }));
+app.use(express.json({ limit: "200kb" }));
+app.use(express.urlencoded({ extended: true, limit: "200kb" }));
 app.use(cookieParser());
+app.use("/api/admin", requireTrustedAdminOrigin);
 
 app.use("/api/health", healthRouter);
 app.use("/api/admin", adminRouter);

@@ -162,7 +162,7 @@ function EducationForm({ form, isEditing, isSaving, onChange, onCancel, onSubmit
       <label className="block text-sm font-medium text-white/80">Order<input type="number" value={form.order} onChange={(event) => onChange("order", event.target.value)} className={inputClass} /></label>
       <FormField label="Description" value={form.description} multiline className="sm:col-span-2" onChange={(value) => onChange("description", value)} />
       <label className="flex items-center gap-3 text-sm font-medium text-white/80 sm:col-span-2"><input type="checkbox" checked={form.visible} onChange={(event) => onChange("visible", event.target.checked)} /> Show on public portfolio</label>
-      <div className="flex gap-3 sm:col-span-2"><button disabled={isSaving} className="rounded-lg bg-[#e82b45] px-5 py-3 text-sm font-semibold text-white disabled:opacity-60">{isSaving ? "Saving..." : isEditing ? "Save Education" : "Add Education"}</button><button type="button" onClick={onCancel} className="rounded-lg border border-white/15 px-5 py-3 text-sm font-medium text-white/80">Cancel</button></div>
+      <div className="flex flex-wrap gap-3 sm:col-span-2"><button disabled={isSaving} className="rounded-lg bg-[#e82b45] px-5 py-3 text-sm font-semibold text-white disabled:opacity-60">{isSaving ? "Saving..." : isEditing ? "Save Education" : "Add Education"}</button><button type="button" onClick={onCancel} className="rounded-lg border border-white/15 px-5 py-3 text-sm font-medium text-white/80">Cancel</button></div>
     </form>
   );
 }
@@ -170,12 +170,12 @@ function EducationForm({ form, isEditing, isSaving, onChange, onCancel, onSubmit
 function EducationRow({ item, onEdit, onDelete }) {
   const institution = item.institution || item.college || item.university || "No institution added";
   const year = item.yearLabel || [item.startDate, item.endDate].filter(Boolean).join(" – ") || "No year added";
-  return <article className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4"><div><p className="font-semibold text-white">{item.title}</p><p className="mt-1 text-sm text-white/60">{institution} · {year}</p><p className="mt-2 text-xs font-medium uppercase tracking-wide text-white/45">{item.status || "No status"} · Order {item.order} · {item.visible ? "Visible" : "Hidden"}</p></div><div className="flex gap-2"><button type="button" onClick={onEdit} className={actionClass}>Edit</button><button type="button" onClick={onDelete} className={actionClass}>Delete</button></div></article>;
+  return <article className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4"><div className="min-w-0 flex-1"><p className="break-words font-semibold text-white">{item.title}</p><p className="mt-1 break-words text-sm text-white/60">{institution} · {year}</p><p className="mt-2 text-xs font-medium uppercase tracking-wide text-white/45">{item.status || "No status"} · Order {item.order} · {item.visible ? "Visible" : "Hidden"}</p></div><div className="flex flex-wrap gap-2"><button type="button" onClick={onEdit} className={actionClass}>Edit</button><button type="button" onClick={onDelete} className={actionClass}>Delete</button></div></article>;
 }
 
-const inputClass = "mt-2 w-full rounded-lg border border-white/15 bg-black/15 px-3 py-2.5 text-sm text-white outline-none focus:border-[#e82b45]";
+const inputClass = "mt-2 w-full min-w-0 max-w-full rounded-lg border border-white/15 bg-black/15 px-3 py-2.5 text-sm text-white outline-none focus:border-[#e82b45]";
 const actionClass = "rounded-lg border border-white/15 px-3 py-2 text-sm text-white/80 hover:border-[#e82b45]";
 
 function FormField({ label, value, onChange, multiline = false, className = "", required = false }) {
-  return <label className={`block text-sm font-medium text-white/80 ${className}`}>{label}{multiline ? <textarea value={value} onChange={(event) => onChange(event.target.value)} rows="4" className={inputClass} /> : <input value={value} required={required} onChange={(event) => onChange(event.target.value)} className={inputClass} />}</label>;
+  return <label className={`block min-w-0 text-sm font-medium text-white/80 ${className}`}>{label}{multiline ? <textarea value={value} onChange={(event) => onChange(event.target.value)} rows="4" className={inputClass} /> : <input value={value} required={required} onChange={(event) => onChange(event.target.value)} className={inputClass} />}</label>;
 }

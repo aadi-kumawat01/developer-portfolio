@@ -116,7 +116,7 @@ export default function AdminShell({ children }) {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex shrink-0 items-center gap-2 sm:gap-3">
                 <div className="hidden text-right sm:block">
                   <p className="text-sm font-medium">{admin.name}</p>
                   <p className="max-w-44 truncate text-xs text-white/55">{admin.email}</p>
@@ -134,7 +134,7 @@ export default function AdminShell({ children }) {
             </div>
           )}
 
-          <main className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-10">{children}</main>
+          <main className="mx-auto w-full max-w-6xl px-4 py-7 sm:px-5 sm:py-8 md:px-6 md:py-10">{children}</main>
         </div>
       </div>
     </div>

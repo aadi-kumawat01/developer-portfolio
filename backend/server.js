@@ -5,6 +5,10 @@ import connectDB from "./src/config/db.js";
 
 async function startServer() {
   try {
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT secret is not configured");
+    }
+
     await connectDB();
     await ensureInitialAdmin();
 
