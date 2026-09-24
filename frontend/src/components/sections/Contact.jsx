@@ -144,6 +144,16 @@ function LinkedinIcon({ className = "h-5 w-5" }) {
   );
 }
 
+function InstagramIcon({ className = "h-5 w-5" }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className={className}>
+      <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.8" />
+      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.8" />
+      <circle cx="17.4" cy="6.7" r="1" fill="currentColor" />
+    </svg>
+  );
+}
+
 function SocialLink({ name, href, icon }) {
   const available = Boolean(href);
 
@@ -179,11 +189,12 @@ function SocialLink({ name, href, icon }) {
       rel="noreferrer"
       className="
         group
-        flex min-h-12 items-center gap-3
+        flex min-h-12 min-w-0 items-center gap-2.5
         rounded-2xl
         border border-[var(--border)]
         bg-[var(--surface)]/25
-        px-3.5
+        px-3
+        cursor-pointer
         text-[var(--foreground)]
         transition-all duration-300
         hover:-translate-y-0.5
@@ -202,7 +213,7 @@ function SocialLink({ name, href, icon }) {
         {icon}
       </span>
 
-      <span className="text-xs font-semibold">
+      <span className="min-w-0 whitespace-nowrap text-xs font-semibold">
         {name}
       </span>
 
@@ -223,8 +234,10 @@ function SocialLink({ name, href, icon }) {
 }
 
 function socialIcon(iconKey) {
-  if (iconKey === "github") return <GithubIcon />;
-  if (iconKey === "linkedin") return <LinkedinIcon />;
+  const key = String(iconKey || "").trim().toLowerCase();
+  if (key === "github") return <GithubIcon />;
+  if (key === "linkedin") return <LinkedinIcon />;
+  if (key === "instagram") return <InstagramIcon />;
   return <ArrowIcon className="h-5 w-5" />;
 }
 
@@ -559,9 +572,9 @@ export function Contact({ contact, profile, socialLinks }) {
               <div
                 className="
                   mt-4 grid gap-2
-                  min-[360px]:grid-cols-3
-                  lg:grid-cols-1
-                  xl:grid-cols-3
+                  grid-cols-1
+                  min-[420px]:grid-cols-2
+                  xl:grid-cols-2
                 "
               >
                 {socials.map((social) => (
