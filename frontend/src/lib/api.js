@@ -1,14 +1,10 @@
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-const authPaths = new Set([
-  "/api/admin/login",
-  "/api/admin/logout",
-  "/api/admin/me",
-]);
-
 export async function apiRequest(path, options = {}) {
   const hasBody = options.body !== undefined;
   const isFormData = typeof FormData !== "undefined" && options.body instanceof FormData;
-  const url = authPaths.has(path) ? path : `${apiBaseUrl}${path}`;
+  // Every CMS request, including login, must target the backend. This keeps the
+  // HttpOnly admin cookie on the same domain that verifies it.
+  const url = `${apiBaseUrl}${path}`;
   const response = await fetch(url, {
     credentials: "include",
     ...options,
