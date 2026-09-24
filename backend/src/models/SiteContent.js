@@ -51,6 +51,18 @@ const contactSchema = new mongoose.Schema(
   { _id: false },
 );
 
+const resumeSchema = new mongoose.Schema(
+  {
+    pdfUrl: { type: String, default: "", trim: true },
+    viewUrl: { type: String, default: "", trim: true },
+    downloadUrl: { type: String, default: "", trim: true },
+    downloadFileName: { type: String, default: "", trim: true },
+    publicId: { type: String, default: "", trim: true },
+    visible: { type: Boolean, default: true },
+  },
+  { _id: false },
+);
+
 const siteContentSchema = new mongoose.Schema(
   {
     singletonKey: {
@@ -62,6 +74,7 @@ const siteContentSchema = new mongoose.Schema(
     hero: { type: heroSchema, default: () => ({}) },
     about: { type: aboutSchema, default: () => ({}) },
     contact: { type: contactSchema, default: () => ({}) },
+    resume: { type: resumeSchema, default: () => ({}) },
   },
   { timestamps: true },
 );

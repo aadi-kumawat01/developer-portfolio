@@ -45,10 +45,12 @@ const navItems = [
   },
 ];
 
-const RESUME_PAGE = "/resume";
-
-const RESUME_PDF =
-  "/resume/Aditya-Kumawat-Resume.pdf";
+const defaultResume = {
+  viewUrl: "/resume",
+  downloadUrl: "/resume/Aditya_Kumawat_Resume.pdf",
+  downloadFileName: "Aditya_Kumawat_Resume.pdf",
+  visible: true,
+};
 
 function Navigation({ activeSection, mobile = false }) {
   return (
@@ -131,13 +133,10 @@ function Navigation({ activeSection, mobile = false }) {
   );
 }
 
-function SeeResume({
-  mobile = false,
-  active = false,
-}) {
+function SeeResume({ mobile = false, active = false }) {
   return (
-    <Link
-      href={RESUME_PAGE}
+    <a
+      href="/resume"
       aria-label="See my resume"
       className={`
         inline-flex
@@ -177,17 +176,19 @@ function SeeResume({
       `}
     >
       See My Resume
-    </Link>
+    </a>
   );
 }
 
 function DownloadResume({
   mobile = false,
+  href = defaultResume.downloadUrl,
+  fileName = defaultResume.downloadFileName,
 }) {
   return (
     <a
-      href={RESUME_PDF}
-      download="Aditya-Kumawat-Resume.pdf"
+      href={href}
+      download={fileName}
       aria-label="Download my resume"
       className={`
         group
@@ -262,6 +263,7 @@ export function Navbar({
         ? "home"
         : null,
     );
+  const [resume, setResume] = useState(defaultResume);
 
   useEffect(() => {
     if (pathname !== "/") return;
@@ -372,6 +374,34 @@ export function Navbar({
       }
     };
   }, [pathname]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadResume() {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/site`);
+        if (!response.ok) return;
+
+        const payload = await response.json();
+        const saved = payload?.data?.resume;
+        if (!saved || !isMounted) return;
+
+        setResume({
+          ...defaultResume,
+          ...saved,
+          viewUrl: saved.viewUrl || defaultResume.viewUrl,
+          downloadUrl: saved.downloadUrl || defaultResume.downloadUrl,
+          downloadFileName: saved.downloadFileName || defaultResume.downloadFileName,
+        });
+      } catch {
+        // The local resume remains available when the CMS is unavailable.
+      }
+    }
+
+    loadResume();
+    return () => { isMounted = false; };
+  }, []);
 
   const brandName =
     profile?.name ||
@@ -488,18 +518,18 @@ export function Navbar({
 
           {/* Desktop Resume */}
 
-          <div className="hidden min-[1152px]:block">
+          {resume.visible && <div className="hidden min-[1152px]:block">
             <SeeResume
               active={
                 resumeActive
               }
             />
-          </div>
+          </div>}
 
           <MobileMenu desktop>
             <div className="grid gap-1">
 
-              <DownloadResume />
+              {resume.visible && <DownloadResume href={resume.downloadUrl} fileName={resume.downloadFileName} />}
 
               <div className="my-2 h-px bg-[var(--border)]" />
 
@@ -520,14 +550,14 @@ export function Navbar({
 
             <div className="my-2 h-px bg-[var(--border)]" />
 
-            <SeeResume
+            {resume.visible && <SeeResume
               mobile
               active={
                 resumeActive
               }
-            />
+            />}
 
-            <DownloadResume mobile />
+            {resume.visible && <DownloadResume mobile href={resume.downloadUrl} fileName={resume.downloadFileName} />}
 
             <div className="my-2 h-px bg-[var(--border)]" />
 

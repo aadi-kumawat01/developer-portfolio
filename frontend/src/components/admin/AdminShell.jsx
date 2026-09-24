@@ -16,6 +16,7 @@ const navigationItems = [
   { label: "Testimonials", href: "/admin/testimonials" },
   { label: "Contact", href: "/admin/contact" },
   { label: "Social Links", href: "/admin/social-links" },
+  { label: "Resume", href: "/admin/resume" },
 ];
 
 function getPageTitle(pathname) {

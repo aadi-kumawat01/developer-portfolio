@@ -9,6 +9,7 @@ import ProjectsManager from "@/components/admin/ProjectsManager";
 import TestimonialsManager from "@/components/admin/TestimonialsManager";
 import ContactManager from "@/components/admin/ContactManager";
 import SocialLinksManager from "@/components/admin/SocialLinksManager";
+import ResumeManager from "@/components/admin/ResumeManager";
 
 const sections = {
   hero: "Hero",
@@ -20,6 +21,7 @@ const sections = {
   testimonials: "Testimonials",
   contact: "Contact",
   "social-links": "Social Links",
+  resume: "Resume",
 };
 
 export default async function AdminSectionPage({ params }) {
@@ -37,6 +39,7 @@ export default async function AdminSectionPage({ params }) {
   if (section === "testimonials") return <TestimonialsManager />;
   if (section === "contact") return <ContactManager />;
   if (section === "social-links") return <SocialLinksManager />;
+  if (section === "resume") return <ResumeManager />;
 
   return <AdminPlaceholder title={title} />;
 }

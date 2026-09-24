@@ -14,12 +14,17 @@ function sortByOrder(items) {
 }
 
 function categoryPayload(category) {
-  return { ...category, order: category.order === "" ? undefined : Number(category.order) };
+  return { name: category.name, slug: category.slug, description: category.description, visible: category.visible, order: category.order === "" ? undefined : Number(category.order) };
 }
 
 function skillPayload(skill) {
   return {
-    ...skill,
+    name: skill.name,
+    category: skill.category,
+    iconKey: skill.iconKey,
+    iconUrl: skill.iconUrl,
+    description: skill.description,
+    visible: skill.visible,
     proficiency: skill.proficiency === "" ? null : Number(skill.proficiency),
     order: skill.order === "" ? undefined : Number(skill.order),
   };

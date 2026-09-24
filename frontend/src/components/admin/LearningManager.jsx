@@ -35,7 +35,7 @@ export default function LearningManager() {
   async function handleSubmit(event) {
     event.preventDefault(); setError(""); setMessage(""); setIsSaving(true);
     try {
-      const response = await apiRequest(editingId ? `/api/admin/learning/${editingId}` : "/api/admin/learning", { method: editingId ? "PATCH" : "POST", body: JSON.stringify({ ...form, order: form.order === "" ? undefined : Number(form.order) }) });
+      const response = await apiRequest(editingId ? `/api/admin/learning/${editingId}` : "/api/admin/learning", { method: editingId ? "PATCH" : "POST", body: JSON.stringify({ type: form.type, title: form.title, institution: form.institution, startDate: form.startDate, endDate: form.endDate, duration: form.duration, status: form.status, certificateStatus: form.certificateStatus, description: form.description, visible: form.visible, order: form.order === "" ? undefined : Number(form.order) }) });
       setItems((current) => sortItems(editingId ? current.map((item) => item._id === editingId ? response.data : item) : [...current, response.data]));
       setMessage(editingId ? "Learning item updated successfully." : "Learning item added successfully."); closeForm();
     } catch (requestError) { setError(requestError.message); }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { apiRequest } from "@/lib/api";
 import { AdminIntro, AdminStatus, Feedback, Field } from "@/components/admin/HeroManager";
+import FileUploadField from "@/components/admin/FileUploadField";
 
 const emptyAbout = { eyebrow: "", heading: "", description: "", developerLabel: "", locationText: "", imageUrl: "", imagePublicId: "", visible: true };
 
@@ -38,7 +39,7 @@ export default function AboutManager() {
   async function saveAbout(event) {
     event.preventDefault(); setError(""); setMessage(""); setIsSaving(true);
     try {
-      await apiRequest("/api/admin/site", { method: "PATCH", body: JSON.stringify({ about }) });
+      await apiRequest("/api/admin/site", { method: "PATCH", body: JSON.stringify({ about: { eyebrow: about.eyebrow, heading: about.heading, description: about.description, developerLabel: about.developerLabel, locationText: about.locationText, imageUrl: about.imageUrl, imagePublicId: about.imagePublicId, visible: about.visible } }) });
       const previousImageId = savedAbout.imagePublicId;
       setSavedAbout(about); setMessage("About content saved successfully.");
       if (previousImageId && previousImageId !== about.imagePublicId) {
@@ -56,10 +57,11 @@ export default function AboutManager() {
 
   async function createItem(type) {
     const isStat = type === "stat"; const source = isStat ? newStat : newHighlight;
-    try { const body = { ...source, order: source.order === "" ? undefined : Number(source.order) }; const response = await apiRequest(`/api/admin/about-${isStat ? "stats" : "highlights"}`, { method: "POST", body: JSON.stringify(body) }); if (isStat) { setStats((items) => [...items, response.data].sort((a, b) => a.order - b.order)); setNewStat({ value: "", label: "", order: "" }); } else { setHighlights((items) => [...items, response.data].sort((a, b) => a.order - b.order)); setNewHighlight({ title: "", order: "" }); } } catch (requestError) { setError(requestError.message); }
+    setError(""); setMessage("");
+    try { const body = { ...source, order: source.order === "" ? undefined : Number(source.order) }; const response = await apiRequest(`/api/admin/about-${isStat ? "stats" : "highlights"}`, { method: "POST", body: JSON.stringify(body) }); if (isStat) { setStats((items) => [...items, response.data].sort((a, b) => a.order - b.order)); setNewStat({ value: "", label: "", order: "" }); } else { setHighlights((items) => [...items, response.data].sort((a, b) => a.order - b.order)); setNewHighlight({ title: "", order: "" }); } setMessage(`${isStat ? "Stat" : "Highlight"} added successfully.`); } catch (requestError) { setError(requestError.message); }
   }
-  async function updateItem(type, item) { try { const response = await apiRequest(`/api/admin/about-${type}/${item._id}`, { method: "PATCH", body: JSON.stringify({ ...item, order: Number(item.order) }) }); const setter = type === "stats" ? setStats : setHighlights; setter((items) => items.map((current) => current._id === item._id ? response.data : current).sort((a, b) => a.order - b.order)); setMessage("Saved successfully."); } catch (requestError) { setError(requestError.message); } }
-  async function deleteItem(type, id) { if (!window.confirm("Delete this item?")) return; try { await apiRequest(`/api/admin/about-${type}/${id}`, { method: "DELETE" }); const setter = type === "stats" ? setStats : setHighlights; setter((items) => items.filter((item) => item._id !== id)); } catch (requestError) { setError(requestError.message); } }
+  async function updateItem(type, item) { try { const body = type === "stats" ? { value: item.value, label: item.label, visible: item.visible, order: Number(item.order) } : { title: item.title, visible: item.visible, order: Number(item.order) }; const response = await apiRequest(`/api/admin/about-${type}/${item._id}`, { method: "PATCH", body: JSON.stringify(body) }); const setter = type === "stats" ? setStats : setHighlights; setter((items) => items.map((current) => current._id === item._id ? response.data : current).sort((a, b) => a.order - b.order)); setMessage("Saved successfully."); } catch (requestError) { setError(requestError.message); } }
+  async function deleteItem(type, id) { if (!window.confirm("Delete this item?")) return; setError(""); setMessage(""); try { await apiRequest(`/api/admin/about-${type}/${id}`, { method: "DELETE" }); const setter = type === "stats" ? setStats : setHighlights; setter((items) => items.filter((item) => item._id !== id)); setMessage(`${type === "stats" ? "Stat" : "Highlight"} deleted.`); } catch (requestError) { setError(requestError.message); } }
   function editItem(type, id, field, value) { const setter = type === "stats" ? setStats : setHighlights; setter((items) => items.map((item) => item._id === id ? { ...item, [field]: value } : item)); }
 
   if (isLoading) return <AdminStatus text="Loading About content..." />;

@@ -29,7 +29,21 @@ function sortItems(items) {
 
 function formPayload(item) {
   return {
-    ...item,
+    type: item.type,
+    title: item.title,
+    institution: item.institution,
+    college: item.college,
+    university: item.university,
+    board: item.board,
+    startDate: item.startDate,
+    endDate: item.endDate,
+    yearLabel: item.yearLabel,
+    percentage: item.percentage,
+    marksLabel: item.marksLabel,
+    status: item.status,
+    badgeText: item.badgeText,
+    description: item.description,
+    visible: item.visible,
     order: item.order === "" ? undefined : Number(item.order),
   };
 }

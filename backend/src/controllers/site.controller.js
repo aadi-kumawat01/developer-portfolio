@@ -22,15 +22,38 @@ const emptyContent = {
     imageUrl: "",
     visible: true,
   },
+  resume: {
+    pdfUrl: "",
+    viewUrl: "",
+    downloadUrl: "",
+    downloadFileName: "",
+    publicId: "",
+    visible: true,
+  },
 };
 
 function buildSiteResponse(content, aboutStats, aboutHighlights) {
   return {
     hero: content?.hero || emptyContent.hero,
     about: content?.about || emptyContent.about,
+    resume: content?.resume || emptyContent.resume,
     aboutStats,
     aboutHighlights,
   };
+}
+
+function isSafeResumeUrl(value) {
+  if (!value) return true;
+  if (value.startsWith("/") && !value.startsWith("//") && !value.includes("\\") && !value.includes("..")) {
+    return true;
+  }
+
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
 }
 
 function addStringUpdates(updates, section, source, fields) {
@@ -134,8 +157,26 @@ function getSiteUpdates(body) {
     }
   }
 
+  if ("resume" in body) {
+    if (!body.resume || typeof body.resume !== "object" || Array.isArray(body.resume)) {
+      return { error: "resume must be an object" };
+    }
+
+    for (const field of ["pdfUrl", "viewUrl", "downloadUrl", "downloadFileName", "publicId"]) {
+      if (!(field in body.resume)) continue;
+      if (typeof body.resume[field] !== "string") return { error: `${field} must be a string` };
+      if (["pdfUrl", "viewUrl", "downloadUrl"].includes(field) && !isSafeResumeUrl(body.resume[field].trim())) {
+        return { error: `${field} must be a valid http, https, or local path` };
+      }
+      updates[`resume.${field}`] = body.resume[field].trim();
+    }
+
+    const visibleError = addBooleanUpdate(updates, "resume", body.resume);
+    if (visibleError) return { error: visibleError };
+  }
+
   if (Object.keys(updates).length === 0) {
-    return { error: "Provide hero or about content to update" };
+    return { error: "Provide hero, about, or resume content to update" };
   }
 
   return { updates };

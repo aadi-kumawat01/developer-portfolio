@@ -42,6 +42,13 @@ function isHttpUrl(value) {
   }
 }
 
+function isSafeLocalImagePath(value) {
+  return value.startsWith("/")
+    && !value.startsWith("//")
+    && !value.includes("\\")
+    && !value.includes("..");
+}
+
 function normalizeUrl(value, field) {
   if (typeof value !== "string") {
     return { error: `${field} must be a string` };
@@ -49,7 +56,9 @@ function normalizeUrl(value, field) {
 
   const url = value.trim();
 
-  if (!url || isHttpUrl(url)) {
+  const isProjectImage = field === "thumbnailUrl" || field === "screenshots";
+
+  if (!url || isHttpUrl(url) || (isProjectImage && isSafeLocalImagePath(url))) {
     return { value: url };
   }
 
