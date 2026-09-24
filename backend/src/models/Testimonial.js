@@ -11,6 +11,14 @@ const testimonialSchema = new mongoose.Schema(
     avatarPublicId: { type: String, trim: true },
     order: { type: Number, default: 0 },
     visible: { type: Boolean, default: true },
+    status: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
+    },
+    submittedByVisitor: { type: Boolean, default: false },
+    submitterEmail: { type: String, trim: true, lowercase: true, select: false },
+    moderatedAt: { type: Date },
   },
   { timestamps: true },
 );

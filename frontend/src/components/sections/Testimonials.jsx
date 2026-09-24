@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { apiRequest } from "@/lib/api";
 
 const SLIDE_TIME = 3800;
 
@@ -34,6 +35,9 @@ export default function Testimonials({ items = [] }) {
   const testimonials = Array.isArray(items) ? items : [];
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", role: "", rating: "5", review: "", website: "" });
+  const [formState, setFormState] = useState({ isSubmitting: false, error: "", success: "" });
 
   useEffect(() => {
     if (isPaused || !testimonials.length) return;
@@ -47,7 +51,21 @@ export default function Testimonials({ items = [] }) {
     return () => clearInterval(timer);
   }, [isPaused, testimonials.length]);
 
-  if (!testimonials.length) return null;
+  useEffect(() => {
+    if (!isReviewModalOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") setIsReviewModalOpen(false);
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [isReviewModalOpen]);
 
   const getPosition = (index) => {
     const total = testimonials.length;
@@ -79,6 +97,22 @@ export default function Testimonials({ items = [] }) {
       return (current + 1) % testimonials.length;
     });
   };
+
+  async function submitReview(event) {
+    event.preventDefault();
+    setFormState({ isSubmitting: true, error: "", success: "" });
+    try {
+      const payload = await apiRequest("/api/testimonials", {
+        method: "POST",
+        body: JSON.stringify({ ...form, rating: Number(form.rating) }),
+      });
+      if (!payload.success) throw new Error(payload.message || "Unable to submit your review.");
+      setForm({ name: "", email: "", role: "", rating: "5", review: "", website: "" });
+      setFormState({ isSubmitting: false, error: "", success: "Thanks! Your review has been submitted for approval." });
+    } catch (error) {
+      setFormState({ isSubmitting: false, error: error.message || "Unable to submit your review.", success: "" });
+    }
+  }
 
   return (
     <section
@@ -153,7 +187,7 @@ export default function Testimonials({ items = [] }) {
           </p>
         </div>
 
-        {/* Testimonial Slider */}
+        {testimonials.length ? <>
         <div
           className="
             relative
@@ -173,7 +207,7 @@ export default function Testimonials({ items = [] }) {
 
             return (
               <article
-                key={testimonial.id}
+                key={testimonial._id || testimonial.id}
                 onClick={() => {
                   if (position === "left") {
                     moveToPrevious();
@@ -496,11 +530,12 @@ export default function Testimonials({ items = [] }) {
         >
           {testimonials.map((testimonial, index) => (
             <button
-              key={testimonial.id}
+              key={testimonial._id || testimonial.id}
               type="button"
               aria-label={`Show testimonial ${index + 1}`}
               onClick={() => setActiveIndex(index)}
               className={`
+                cursor-pointer
                 h-1.5
                 rounded-full
 
@@ -515,8 +550,46 @@ export default function Testimonials({ items = [] }) {
               `}
             />
           ))}
+        </div></> : <div className="mx-auto mt-10 max-w-xl text-center sm:mt-12">
+          <p className="text-base font-medium text-white/75">No reviews yet.</p>
+          <p className="mt-2 text-sm leading-7 text-white/50">Be the first to share your feedback.</p>
+        </div>}
+
+        <div className="mx-auto mt-10 max-w-2xl rounded-2xl border border-white/[0.09] bg-white/[0.03] px-5 py-6 text-center sm:mt-12 sm:px-7">
+          <h3 className="text-lg font-semibold text-white">Share Your Experience</h3>
+          <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-white/50">Worked with me or explored one of my projects? I&apos;d love to hear your feedback.</p>
+          <button type="button" onClick={() => setIsReviewModalOpen(true)} className="mt-5 cursor-pointer rounded-lg bg-rose-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-rose-400">Leave a Review</button>
         </div>
       </div>
+      {isReviewModalOpen && <ReviewModal form={form} formState={formState} onChange={(field, value) => setForm((current) => ({ ...current, [field]: value }))} onClose={() => setIsReviewModalOpen(false)} onSubmit={submitReview} />}
     </section>
   );
+}
+
+function ReviewModal({ form, formState, onChange, onClose, onSubmit }) {
+  return <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-4 py-5 backdrop-blur-sm" onMouseDown={onClose}>
+    <div role="dialog" aria-modal="true" aria-labelledby="review-modal-title" className="max-h-[90dvh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-white/[0.12] bg-[#171417] p-5 shadow-2xl sm:p-7" onMouseDown={(event) => event.stopPropagation()}>
+      <div className="flex items-start justify-between gap-4">
+        <div><h3 id="review-modal-title" className="text-xl font-semibold text-white">Share Your Feedback</h3><p className="mt-2 text-sm leading-6 text-white/50">Your review will be visible after approval.</p></div>
+        <button type="button" onClick={onClose} aria-label="Close review form" className="grid h-9 w-9 shrink-0 cursor-pointer place-items-center rounded-lg border border-white/15 text-lg text-white/70 transition hover:border-rose-400 hover:text-white">×</button>
+      </div>
+      {formState.success ? <div className="py-12 text-center"><p role="status" aria-live="polite" className="text-base leading-7 text-emerald-300">{formState.success}</p><button type="button" onClick={onClose} className="mt-6 cursor-pointer rounded-lg border border-white/15 px-5 py-2.5 text-sm font-semibold text-white transition hover:border-rose-400">Close</button></div> : <form onSubmit={onSubmit} className="mt-6">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <ReviewField label="Name *" value={form.name} onChange={(value) => onChange("name", value)} required />
+          <ReviewField label="Email *" type="email" value={form.email} onChange={(value) => onChange("email", value)} required />
+          <ReviewField label="Your Role" value={form.role} onChange={(value) => onChange("role", value)} />
+          <label className="text-sm font-medium text-white/75">Rating<select value={form.rating} onChange={(event) => onChange("rating", event.target.value)} className="mt-2 w-full cursor-pointer rounded-lg border border-white/15 bg-black/20 px-3 py-2.5 text-sm text-white outline-none focus:border-rose-400"><option value="5">5 — Excellent</option><option value="4">4 — Very Good</option><option value="3">3 — Good</option><option value="2">2 — Fair</option><option value="1">1 — Poor</option></select></label>
+          <ReviewField label="Review *" value={form.review} onChange={(value) => onChange("review", value)} required multiline className="sm:col-span-2" />
+          <input tabIndex="-1" autoComplete="off" value={form.website} onChange={(event) => onChange("website", event.target.value)} className="hidden" aria-hidden="true" />
+        </div>
+        {formState.error && <p role="alert" className="mt-4 text-sm text-rose-300">{formState.error}</p>}
+        <div className="mt-6 flex flex-wrap justify-end gap-3"><button type="button" onClick={onClose} className="cursor-pointer rounded-lg border border-white/15 px-5 py-2.5 text-sm font-semibold text-white/80 transition hover:border-rose-400">Cancel</button><button type="submit" disabled={formState.isSubmitting} className="cursor-pointer rounded-lg bg-rose-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-rose-400 disabled:cursor-not-allowed disabled:opacity-60">{formState.isSubmitting ? "Submitting..." : "Submit Review"}</button></div>
+      </form>}
+    </div>
+  </div>;
+}
+
+function ReviewField({ label, type = "text", value, onChange, required = false, multiline = false, className = "" }) {
+  const classNames = "mt-2 w-full rounded-lg border border-white/15 bg-black/20 px-3 py-2.5 text-sm text-white outline-none focus:border-rose-400";
+  return <label className={`text-sm font-medium text-white/75 ${className}`}>{label}{multiline ? <textarea value={value} required={required} onChange={(event) => onChange(event.target.value)} rows="5" maxLength="1500" className={classNames} /> : <input type={type} value={value} required={required} onChange={(event) => onChange(event.target.value)} maxLength={type === "email" ? 254 : 100} className={classNames} />}</label>;
 }

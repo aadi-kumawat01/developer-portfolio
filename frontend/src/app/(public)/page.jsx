@@ -21,12 +21,14 @@ export default async function HomePage() {
     contact,
     profile,
   } = getPortfolio();
-  const siteContent = await getPublicSiteContent();
-  const publicEducationContent = await getPublicEducationContent();
-  const publicSkillsContent = await getPublicSkillsContent();
-  const featuredProjects = await getFeaturedProjects();
-  const testimonials = await getPublicTestimonials();
-  const publicContactContent = await getPublicContactContent();
+  const [siteContent, publicEducationContent, publicSkillsContent, featuredProjects, testimonials, publicContactContent] = await Promise.all([
+    getPublicSiteContent(),
+    getPublicEducationContent(),
+    getPublicSkillsContent(),
+    getFeaturedProjects(),
+    getPublicTestimonials(),
+    getPublicContactContent(),
+  ]);
   const cmsHeroIsReady = hasSiteContent(siteContent?.hero);
   const cmsAboutIsReady = hasSiteContent(siteContent?.about)
     || siteContent?.aboutStats?.length

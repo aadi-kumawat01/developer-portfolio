@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
-    "seed:portfolio": "node src/scripts/seedPortfolioData.js"
+    "seed:portfolio": "node src/scripts/seedPortfolioData.js",
+    "ping:health": "node scripts/pingBackend.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
