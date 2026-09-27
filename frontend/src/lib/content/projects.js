@@ -49,6 +49,11 @@ export async function getFeaturedProjects() {
   return Array.isArray(data) ? data.map(mapCmsProject) : [];
 }
 
+export async function getPublicProjectCategories() {
+  const data = await getPublicData("/api/project-categories");
+  return Array.isArray(data) ? data : [];
+}
+
 export async function getPublicProject(slug) {
   const data = await getPublicData(`/api/projects/${encodeURIComponent(slug)}`);
   return data ? mapCmsProject(data) : null;

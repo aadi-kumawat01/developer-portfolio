@@ -3,13 +3,6 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-const filters = [
-  { id: "all", label: "All Projects" },
-  { id: "fullstack", label: "Full Stack" },
-  { id: "frontend", label: "Frontend" },
-  { id: "backend", label: "Backend" },
-];
-
 function normalizeCategory(value = "") {
   return value
     .toLowerCase()
@@ -329,9 +322,17 @@ function ProjectCard({ project, index }) {
   );
 }
 
-export function AllProjects({ projects }) {
+export function AllProjects({ projects, categories = [] }) {
   const [activeFilter, setActiveFilter] =
     useState("all");
+
+  const filters = useMemo(() => [
+    { id: "all", label: "All Projects" },
+    ...categories.map((category) => ({
+      id: normalizeCategory(category.slug),
+      label: category.name,
+    })),
+  ], [categories]);
 
   const items = useMemo(() => {
     if (!projects?.length) return [];
