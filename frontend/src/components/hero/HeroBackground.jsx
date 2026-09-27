@@ -33,7 +33,33 @@ export function HeroBackground() {
   }, []);
 
   const shouldLoadVideo = interactionReady && desktopInteractive && !forceHeroFallback;
-  const scrub = useVideoScrub(heroRef, videoRef, shouldLoadVideo);
+  const { mediaReady, mediaFailed, onPointerMove } = useVideoScrub(
+    heroRef,
+    videoRef,
+    shouldLoadVideo,
+  );
+
+  useEffect(() => {
+    if (!shouldLoadVideo) return;
+
+    const trackHeroPointer = (event) => {
+      if (event.pointerType === "touch") return;
+
+      const bounds = heroRef.current?.getBoundingClientRect();
+      if (
+        !bounds ||
+        event.clientX < bounds.left ||
+        event.clientX > bounds.right ||
+        event.clientY < bounds.top ||
+        event.clientY > bounds.bottom
+      ) return;
+
+      onPointerMove(event);
+    };
+
+    window.addEventListener("pointermove", trackHeroPointer, { passive: true });
+    return () => window.removeEventListener("pointermove", trackHeroPointer);
+  }, [onPointerMove, shouldLoadVideo]);
 
   useEffect(() => {
     if (!interactionReady) return;
@@ -50,13 +76,12 @@ export function HeroBackground() {
     posterReady,
   ]);
 
-  const showVideo = shouldLoadVideo && scrub.mediaReady && !scrub.mediaFailed;
+  const showVideo = shouldLoadVideo && mediaReady && !mediaFailed;
 
   return (
     <div
       ref={heroRef}
       aria-hidden="true"
-      onPointerMove={shouldLoadVideo ? scrub.onPointerMove : undefined}
       className={`hero-media absolute inset-0 z-0 overflow-hidden bg-[radial-gradient(circle_at_72%_32%,color-mix(in_srgb,var(--primary)_14%,transparent),transparent_44%)] ${
         desktopInteractive ? "pointer-events-auto" : "pointer-events-none"
       }`}

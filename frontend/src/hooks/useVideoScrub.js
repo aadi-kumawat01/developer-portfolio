@@ -134,9 +134,14 @@ export function useVideoScrub(heroRef, videoRef, enabled) {
             return;
           }
 
+          targetTime.current = clampMediaTime(
+            lastPointerProgress.current * video.duration,
+            video.duration,
+          );
           mediaReadyRef.current = true;
           setMediaFailed(false);
           setMediaReady(true);
+          moveTowardTarget();
         });
       });
     };
@@ -156,7 +161,10 @@ export function useVideoScrub(heroRef, videoRef, enabled) {
       setMediaReady(false);
       setMediaFailed(false);
 
-      targetTime.current = clampMediaTime(video.duration / 2, video.duration);
+      targetTime.current = clampMediaTime(
+        lastPointerProgress.current * video.duration,
+        video.duration,
+      );
 
       try {
         const alreadyAtTarget =
