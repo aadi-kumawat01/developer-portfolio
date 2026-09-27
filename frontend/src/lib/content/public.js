@@ -1,8 +1,9 @@
 export const publicApiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+export const publicContentFetchOptions = { next: { revalidate: 30 } };
 
 export async function getPublicResponse(path) {
   try {
-    const response = await fetch(`${publicApiBaseUrl}${path}`, { cache: "no-store" });
+    const response = await fetch(`${publicApiBaseUrl}${path}`, publicContentFetchOptions);
     if (!response.ok) return { ok: false, data: null };
 
     const payload = await response.json();

@@ -38,19 +38,16 @@ export function HeroBackground() {
   useEffect(() => {
     if (!interactionReady) return;
 
-    const heroIsReady =
-      forceHeroFallback ||
-      (desktopInteractive ? scrub.mediaReady || scrub.mediaFailed : posterReady);
+    // The poster is already the visual fallback, so the entry loader should not
+    // wait for the much larger scrub video before revealing the page.
+    const heroIsReady = forceHeroFallback || posterReady;
 
     if (heroIsReady) markHeroSettled();
   }, [
-    desktopInteractive,
     forceHeroFallback,
     interactionReady,
     markHeroSettled,
     posterReady,
-    scrub.mediaFailed,
-    scrub.mediaReady,
   ]);
 
   const showVideo = shouldLoadVideo && scrub.mediaReady && !scrub.mediaFailed;

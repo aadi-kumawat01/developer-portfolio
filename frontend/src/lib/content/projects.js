@@ -1,4 +1,4 @@
-import { publicApiBaseUrl } from "@/lib/content/public";
+import { getPublicResponse } from "@/lib/content/public";
 
 export function mapCmsProject(project) {
   const category = typeof project.category === "object" ? project.category : null;
@@ -32,10 +32,8 @@ export function mapCmsProject(project) {
 
 async function getPublicData(path) {
   try {
-    const response = await fetch(`${publicApiBaseUrl}${path}`, { cache: "no-store" });
-    if (!response.ok) return null;
-    const payload = await response.json();
-    return payload?.success ? payload.data : null;
+    const response = await getPublicResponse(path);
+    return response.ok ? response.data : null;
   } catch {
     return null;
   }

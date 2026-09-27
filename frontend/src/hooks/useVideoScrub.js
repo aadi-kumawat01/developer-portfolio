@@ -17,6 +17,7 @@ export function useVideoScrub(heroRef, videoRef, enabled) {
   const enabledRef = useRef(enabled);
   const mediaReadyRef = useRef(false);
   const targetTime = useRef(0);
+  const lastPointerProgress = useRef(0.5);
   const animationFrame = useRef(null);
 
   const stopAnimationFrame = useCallback(() => {
@@ -245,20 +246,47 @@ export function useVideoScrub(heroRef, videoRef, enabled) {
     };
   }, [enabled, moveTowardTarget, stopAnimationFrame, videoRef]);
 
+  useEffect(() => {
+    if (!enabled) return;
+
+    const resumeScrubbing = () => {
+      if (document.visibilityState !== "visible") {
+        stopAnimationFrame();
+        return;
+      }
+
+      const video = videoRef.current;
+      if (!video || !Number.isFinite(video.duration) || video.duration <= 0) return;
+
+      targetTime.current = clampMediaTime(
+        lastPointerProgress.current * video.duration,
+        video.duration,
+      );
+
+      if (!video.seeking) {
+        try {
+          video.currentTime = targetTime.current;
+        } catch {
+          // A browser may temporarily suspend media while a tab is backgrounded.
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", resumeScrubbing);
+    window.addEventListener("focus", resumeScrubbing);
+
+    return () => {
+      document.removeEventListener("visibilitychange", resumeScrubbing);
+      window.removeEventListener("focus", resumeScrubbing);
+    };
+  }, [enabled, stopAnimationFrame, videoRef]);
+
   const updateProgress = useCallback(
     (clientX) => {
       const hero = heroRef.current;
       const video = videoRef.current;
 
-      if (
-        !hero ||
-        !video ||
-        !enabledRef.current ||
-        !mediaReadyRef.current ||
-        reducedMotion.current ||
-        !Number.isFinite(video.duration) ||
-        video.duration <= 0
-      ) {
+      if (!hero || !enabledRef.current || reducedMotion.current) {
         return;
       }
 
@@ -266,6 +294,15 @@ export function useVideoScrub(heroRef, videoRef, enabled) {
       if (bounds.width <= 0) return;
 
       const progress = clamp01((clientX - bounds.left) / bounds.width);
+      lastPointerProgress.current = progress;
+
+      if (
+        !video ||
+        !mediaReadyRef.current ||
+        !Number.isFinite(video.duration) ||
+        video.duration <= 0
+      ) return;
+
       targetTime.current = clampMediaTime(progress * video.duration, video.duration);
       moveTowardTarget();
     },

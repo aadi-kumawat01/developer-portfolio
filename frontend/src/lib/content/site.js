@@ -1,13 +1,9 @@
-import { publicApiBaseUrl } from "@/lib/content/public";
+import { getPublicResponse } from "@/lib/content/public";
 
 export async function getPublicSiteContent() {
   try {
-    const response = await fetch(`${publicApiBaseUrl}/api/site`, { cache: "no-store" });
-
-    if (!response.ok) return null;
-
-    const payload = await response.json();
-    return payload?.success ? payload.data : null;
+    const response = await getPublicResponse("/api/site");
+    return response.ok ? response.data : null;
   } catch {
     return null;
   }
