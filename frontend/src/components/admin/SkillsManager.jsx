@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { apiRequest } from "@/lib/api";
+import { createSlug } from "@/lib/slug";
 import { AdminIntro, AdminStatus, Feedback } from "@/components/admin/HeroManager";
 
 const emptyCategory = { name: "", slug: "", description: "", order: "", visible: true };
@@ -164,7 +165,7 @@ export default function SkillsManager() {
     <div className="space-y-8">
       <AdminIntro title="Skills Management" text="Manage visible skill categories and the skills shown inside them." />
       <Feedback error={error} message={message} />
-      <CategorySection categories={categories} skills={skills} form={categoryForm} editingId={editingCategoryId} isSaving={isSavingCategory} onChange={(field, value) => setCategoryForm((current) => ({ ...current, [field]: value }))} onSubmit={saveCategory} onAdd={() => beginCategory()} onEdit={beginCategory} onDelete={deleteCategory} onCancel={() => beginCategory()} />
+      <CategorySection categories={categories} skills={skills} form={categoryForm} editingId={editingCategoryId} isSaving={isSavingCategory} onChange={(field, value) => setCategoryForm((current) => ({ ...current, [field]: value, ...(field === "name" ? { slug: createSlug(value) } : {}) }))} onSubmit={saveCategory} onAdd={() => beginCategory()} onEdit={beginCategory} onDelete={deleteCategory} onCancel={() => beginCategory()} />
       <SkillSection categories={categories} skills={skills} form={skillForm} editingId={editingSkillId} isSaving={isSavingSkill} onChange={(field, value) => setSkillForm((current) => ({ ...current, [field]: value }))} onSubmit={saveSkill} onAdd={() => beginSkill()} onEdit={beginSkill} onDelete={deleteSkill} onCancel={() => beginSkill()} />
     </div>
   );
@@ -181,4 +182,4 @@ function SkillSection({ categories, skills, form, editingId, isSaving, onChange,
 
 function SkillRow({ skill, onEdit, onDelete }) { const categoryName = skill.category?.name; const proficiency = skill.proficiency === null || skill.proficiency === undefined ? "No proficiency" : `${skill.proficiency}% proficiency`; return <article className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 p-3"><div className="min-w-0 flex-1"><p className="break-words font-medium text-white">{skill.name}</p><p className="mt-1 break-words text-xs text-white/55">{categoryName && `${categoryName} · `}{proficiency} · Order {skill.order} · {skill.visible ? "Visible" : "Hidden"}{skill.iconKey && ` · ${skill.iconKey}`}</p></div><div className="flex flex-wrap gap-2"><button type="button" onClick={onEdit} className={actionClass}>Edit</button><button type="button" onClick={onDelete} className={actionClass}>Delete</button></div></article>; }
 
-function FormField({ label, value, onChange, multiline = false, className = "", required = false }) { return <label className={`block text-sm font-medium text-white/80 ${className}`}>{label}{multiline ? <textarea value={value} onChange={(event) => onChange(event.target.value)} rows="4" className={inputClass} /> : <input value={value} required={required} onChange={(event) => onChange(event.target.value)} className={inputClass} />}</label>; }
+function FormField({ label, value, onChange, multiline = false, className = "", required = false, readOnly = false }) { return <label className={`block text-sm font-medium text-white/80 ${className}`}>{label}{multiline ? <textarea value={value} onChange={(event) => onChange(event.target.value)} rows="4" className={inputClass} /> : <input value={value} required={required} readOnly={readOnly} onChange={(event) => onChange?.(event.target.value)} className={inputClass} />}</label>; }
