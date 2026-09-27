@@ -1,5 +1,8 @@
 import ResumeContent from "../models/ResumeContent.js";
 import SiteContent from "../models/SiteContent.js";
+import { Readable } from "node:stream";
+
+const resumeDownloadFileName = "Aditya_Kumawat_Full_Stack_Developer_Resume.pdf";
 
 const text = (value) => (typeof value === "string" ? value.trim() : "");
 const ordered = (items = []) => [...items].sort((a, b) => a.order - b.order);
@@ -83,6 +86,18 @@ function resumePdf(site) {
   return { downloadUrl: resume.downloadUrl || "", downloadFileName: resume.downloadFileName || "", publicId: resume.publicId || "" };
 }
 
+function hasTrustedResumePdf(resume) {
+  if (typeof resume?.publicId !== "string" || !resume.publicId.startsWith("portfolio/resumes/")) return false;
+  if (typeof resume.pdfUrl !== "string" || !resume.pdfUrl) return false;
+
+  try {
+    const url = new URL(resume.pdfUrl);
+    return url.protocol === "https:" && url.hostname === "res.cloudinary.com" && decodeURIComponent(url.pathname).includes(`/${resume.publicId}`);
+  } catch {
+    return false;
+  }
+}
+
 export async function getPublicResume(req, res) {
   const [content, site] = await Promise.all([ResumeContent.findOne({ singletonKey: "resume" }).lean(), SiteContent.findOne({ singletonKey: "site" }).lean()]);
   const source = content || emptyResume;
@@ -97,6 +112,36 @@ export async function getPublicResume(req, res) {
     pdf: resumePdf(site),
   };
   res.json({ success: true, data });
+}
+
+export async function downloadPublicResume(req, res) {
+  const site = await SiteContent.findOne({ singletonKey: "site" }).lean();
+  const resume = site?.resume;
+
+  if (!hasTrustedResumePdf(resume)) {
+    return res.status(404).json({ success: false, message: "Resume PDF is unavailable." });
+  }
+
+  let upstream;
+  try {
+    upstream = await fetch(resume.pdfUrl);
+  } catch {
+    return res.status(502).json({ success: false, message: "Resume PDF could not be retrieved." });
+  }
+
+  if (!upstream.ok || !upstream.body) {
+    return res.status(502).json({ success: false, message: "Resume PDF could not be retrieved." });
+  }
+
+  const contentLength = upstream.headers.get("content-length");
+  res.set({
+    "Content-Type": "application/pdf",
+    "Content-Disposition": `attachment; filename="${resumeDownloadFileName}"`,
+    "Cache-Control": "private, no-store",
+  });
+  if (contentLength) res.set("Content-Length", contentLength);
+
+  Readable.fromWeb(upstream.body).pipe(res);
 }
 
 export async function getAdminResume(req, res) {

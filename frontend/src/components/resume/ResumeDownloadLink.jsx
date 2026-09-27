@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 
 const fallbackResume = {
   downloadUrl: "/resume/Aditya_Kumawat_Resume.pdf",
-  downloadFileName: "Aditya_Kumawat_Resume.pdf",
+  downloadFileName: "Aditya_Kumawat_Full_Stack_Developer_Resume.pdf",
   visible: true,
 };
+
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default function ResumeDownloadLink() {
   const [resume, setResume] = useState(fallbackResume);
@@ -21,11 +23,12 @@ export default function ResumeDownloadLink() {
         const payload = await response.json();
         const saved = payload?.data?.pdf;
         if (!saved || !isMounted) return;
+        const hasUploadedPdf = Boolean(saved.publicId);
         setResume({
           ...fallbackResume,
           ...saved,
-          downloadUrl: saved.downloadUrl || fallbackResume.downloadUrl,
-          downloadFileName: saved.downloadFileName || fallbackResume.downloadFileName,
+          downloadUrl: hasUploadedPdf ? `${apiBaseUrl}/api/resume/download` : fallbackResume.downloadUrl,
+          downloadFileName: fallbackResume.downloadFileName,
         });
       } catch {
         // Keep the local resume download available when the CMS is unavailable.
