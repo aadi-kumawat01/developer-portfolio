@@ -7,6 +7,9 @@ const { settings } = getPortfolio();
 export const metadata = {
   title: settings.title,
   description: settings.description,
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 const themeBootstrap = `
